@@ -6,12 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class Test {
-    private final static String SQL_INSERT = "INSERT INTO actor(ACTOR_ID, NAME, DATE_OF_BIRTH, INFO) VALUES(?,?,?,?)";
+    /*private final static String SQL_INSERT = "INSERT INTO actor(ACTOR_ID, NAME, DATE_OF_BIRTH, INFO) VALUES(?,?,?,?)";
     private static Connection connection;
     public static void main(String[] args) {
         DBConnectionPool dbConnectionPool = DBConnectionPool.getInstance();
         connection = dbConnectionPool.getConnection();
-        Actor actor = new Actor(1, "John", "1994", "List");
+        Actor actor = new Actor(5, "John", "1994", "List");
         System.out.print(insertActor(getPreparedStatement(), actor));
     }
     private static PreparedStatement getPreparedStatement() {
@@ -31,10 +31,11 @@ public class Test {
             preparedStatement.setString(2, actor.getName());
             preparedStatement.setString(3, actor.getDateOfBirth());
             preparedStatement.setString(4, actor.getInfo());
+            preparedStatement.executeUpdate();
             flag = true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return flag;
-    }
+    }*/
 }

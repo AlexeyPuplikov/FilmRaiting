@@ -28,7 +28,7 @@ public class DBConnectionPool {
 
     private DBConnectionPool() {
         try {
-            FileInputStream fis = new FileInputStream("C:\\Users\\user\\Desktop\\FinalProject\\FilmRaiting\\src\\main\\resources\\database.properties");
+            InputStream fis = new FileInputStream("C:\\Users\\user\\Desktop\\FinalProject\\FilmRaiting\\src\\main\\resources\\database.properties");
             Properties property = new Properties();
             property.load(fis);
 
