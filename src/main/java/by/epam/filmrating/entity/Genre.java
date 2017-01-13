@@ -1,6 +1,6 @@
 package by.epam.filmrating.entity;
 
-public class Genre {
+public class Genre extends Entity{
     private int genreId;
     private EnumGenre name;
 

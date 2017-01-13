@@ -1,6 +1,6 @@
 package by.epam.filmrating.entity;
 
-public class Comment {
+public class Comment extends Entity{
     private int commentId;
     private String text;
     private int filmId;

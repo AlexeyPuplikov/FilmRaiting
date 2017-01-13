@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -68,15 +69,39 @@ public class DBConnectionPool {
         return connection;
     }
 
-    public void freeConnection(Connection connection) {
+    public void freeConnection() {
         try {
-            if (connection != null) {
-                if (!connectionList.offer(connection, 15, TimeUnit.SECONDS)) {
-                    connection.close();
+            if (getConnection() != null) {
+                if (!connectionList.offer(getConnection(), 15, TimeUnit.SECONDS)) {
+                    getConnection().close();
                 }
             }
         } catch (InterruptedException | SQLException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public PreparedStatement getPreparedStatement(String sql) throws SQLException{
+        if(getConnection() != null) {
+            try {
+                PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
+                if(preparedStatement != null) {
+                    return preparedStatement;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        throw new SQLException();
+    }
+
+    public void closePrepareStatement(PreparedStatement preparedStatement) {
+        if(preparedStatement != null) {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

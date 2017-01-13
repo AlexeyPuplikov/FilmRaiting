@@ -3,7 +3,7 @@ package by.epam.filmrating.entity;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Film {
+public class Film extends Entity{
     private int filmId;
     private String name;
     private Date year;
@@ -106,5 +106,22 @@ public class Film {
         result = 31 * result + actors.hashCode();
         result = 31 * result + comments.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Film{" +
+                "filmId=" + filmId +
+                ", name='" + name + '\'' +
+                ", year=" + year +
+                ", country='" + country + '\'' +
+                ", description='" + description + '\'' +
+                ", premiere=" + premiere +
+                ", time=" + time +
+                ", stageDirectors=" + stageDirectors +
+                ", genres=" + genres +
+                ", actors=" + actors +
+                ", comments=" + comments +
+                '}';
     }
 }

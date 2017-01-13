@@ -2,7 +2,7 @@ package by.epam.filmrating.entity;
 
 import java.util.Date;
 
-public class StageDirector {
+public class StageDirector extends Entity{
     private int stageDirectorId;
     private String name;
     private Date dateOfBirth;
