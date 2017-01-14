@@ -19,7 +19,7 @@ public class DBConnectionPool {
     private final static String DB_URL = "db.url";
     private final static String DB_USER = "db.user";
     private final static String DB_PASSWORD = "db.password";
-    private final static String DB_PROPERTY_PATH = "../database.properties";
+    private final static String DB_PROPERTY_PATH = "database.properties";
 
     private BlockingQueue<Connection> connectionList;
     private String DBUrl;
@@ -29,7 +29,7 @@ public class DBConnectionPool {
 
     private DBConnectionPool() {
         try {
-            InputStream fis = new FileInputStream("C:\\Users\\user\\Desktop\\FinalProject\\FilmRaiting\\src\\main\\resources\\database.properties");
+            InputStream fis = getClass().getClassLoader().getResourceAsStream(DB_PROPERTY_PATH);
             Properties property = new Properties();
             property.load(fis);
 

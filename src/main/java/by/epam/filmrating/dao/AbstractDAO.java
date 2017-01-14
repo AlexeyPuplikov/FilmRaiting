@@ -22,7 +22,7 @@ public abstract class AbstractDAO<K, T extends Entity>{
         connectionPool.freeConnection();
     }
 
-    protected void closeStatement(PreparedStatement preparedStatement) {
+    void closeStatement(PreparedStatement preparedStatement) {
         connectionPool.closePrepareStatement(preparedStatement);
     }
 }
