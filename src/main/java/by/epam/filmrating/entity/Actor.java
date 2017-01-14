@@ -3,20 +3,23 @@ package by.epam.filmrating.entity;
 import java.util.Date;
 
 public class Actor extends Entity{
-    private int actorId;
     private String name;
     private Date dateOfBirth;
     private String info;
 
+    public Actor() {
+        super();
+    }
+
     public Actor(int actorId, String name, Date dateOfBirth, String info) {
-        this.actorId = actorId;
+        super(actorId);
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.info = info;
     }
 
     public int getActorId() {
-        return actorId;
+        return super.getId();
     }
 
     public String getName() {
@@ -31,26 +34,49 @@ public class Actor extends Entity{
         return info;
     }
 
+    public void setActorId(int actorId) {
+        super.setId(actorId);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         Actor actor = (Actor) o;
 
-        if (actorId != actor.actorId) return false;
-        if (!name.equals(actor.name)) return false;
-        if (!dateOfBirth.equals(actor.dateOfBirth)) return false;
-        return info.equals(actor.info);
+        return name.equals(actor.name) && dateOfBirth.equals(actor.dateOfBirth) && info.equals(actor.info);
 
     }
 
     @Override
     public int hashCode() {
-        int result = actorId;
+        int result = super.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + dateOfBirth.hashCode();
         result = 31 * result + info.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Actor{" +
+                "name='" + name + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", info='" + info + '\'' +
+                "} " + super.toString();
     }
 }

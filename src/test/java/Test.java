@@ -1,4 +1,5 @@
 import by.epam.filmrating.connection.DBConnectionPool;
+import by.epam.filmrating.dao.ActorDAO;
 import by.epam.filmrating.dao.FilmDAO;
 import by.epam.filmrating.entity.Actor;
 
@@ -40,8 +41,7 @@ public class Test {
         return flag;
     }*/
     public static void main(String[] args) {
-        FilmDAO dao = new FilmDAO();
+        ActorDAO dao = new ActorDAO();
         System.out.print(dao.findAll());
-        dao.closeConnection();
     }
 }

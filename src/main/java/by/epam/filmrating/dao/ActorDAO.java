@@ -1,8 +1,8 @@
 package by.epam.filmrating.dao;
 
 import by.epam.filmrating.connection.DBConnectionPool;
+import by.epam.filmrating.entity.Actor;
 import by.epam.filmrating.entity.Entity;
-import by.epam.filmrating.entity.Film;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,27 +11,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilmDAO extends AbstractDAO{
+public class ActorDAO extends AbstractDAO{
 
-    private final static String SELECT_ALL_FILM = "SELECT * FROM film";
+    private final static String SELECT_ACTOR_FILM = "SELECT * FROM actor";
 
-    public FilmDAO() {
+    public ActorDAO() {
         this.connectionPool = DBConnectionPool.getInstance();
     }
 
     @Override
-    public List<Film> findAll() {
-        List<Film> films = new ArrayList<>();
+    public List findAll() {
+        List<Actor> actors = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         Connection connection = connectionPool.getConnection();
         try {
-            preparedStatement = connectionPool.getPreparedStatement(SELECT_ALL_FILM, connection);
+            preparedStatement = connectionPool.getPreparedStatement(SELECT_ACTOR_FILM, connection);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                /*Film film = new Film(resultSet.getInt("FILM_ID"), resultSet.getString("NAME"), resultSet.getDate("YEAR"),
-                        resultSet.getString("COUNTRY"), resultSet.getString("DESCRIPTION"), resultSet.getDate("PREMIERE"),
-                        resultSet.getInt("TIME"));*//*
-                films.add(film);*/
+                Actor actor = new Actor(resultSet.getInt(1), resultSet.getString(2), resultSet.getDate(3), resultSet.getString(4));
+                actors.add(actor);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -39,7 +37,7 @@ public class FilmDAO extends AbstractDAO{
             this.closeStatement(preparedStatement);
             this.closeConnection(connection);
         }
-        return films;
+        return actors;
     }
 
     @Override

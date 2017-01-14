@@ -1,6 +1,5 @@
 package by.epam.filmrating.connection;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -23,7 +22,7 @@ public class DBConnectionPool {
 
     private BlockingQueue<Connection> connectionList;
     private String DBUrl;
-    private String DBlogin;
+    private String DBuser;
     private String DBpassword;
     private int poolSize;
 
@@ -34,14 +33,14 @@ public class DBConnectionPool {
             property.load(fis);
 
             DBUrl = property.getProperty(DB_URL);
-            DBlogin = property.getProperty(DB_USER);
+            DBuser = property.getProperty(DB_USER);
             DBpassword = property.getProperty(DB_PASSWORD);
             poolSize = Integer.parseInt(property.getProperty(DB_POOL_SIZE));
             connectionList = new ArrayBlockingQueue<>(poolSize);
             Class.forName(property.getProperty(DB_DRIVER_CLASS));
 
             for (int i = 0; i < poolSize; i++) {
-                connectionList.add(DriverManager.getConnection(DBUrl, DBlogin, DBpassword));
+                connectionList.add(DriverManager.getConnection(DBUrl, DBuser, DBpassword));
             }
         } catch (IOException | SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
@@ -61,7 +60,8 @@ public class DBConnectionPool {
         try {
             connection = connectionList.poll(15, TimeUnit.SECONDS);
             if (connection == null) {
-                connection = DriverManager.getConnection(DBUrl, DBlogin, DBpassword);
+                connection = DriverManager.getConnection(DBUrl, DBuser, DBpassword);
+                connectionList.add(connection);
             }
         } catch (InterruptedException | SQLException ex) {
             ex.printStackTrace();
@@ -69,11 +69,11 @@ public class DBConnectionPool {
         return connection;
     }
 
-    public void freeConnection() {
+    public void freeConnection(Connection connection) {
         try {
-            if (getConnection() != null) {
-                if (!connectionList.offer(getConnection(), 15, TimeUnit.SECONDS)) {
-                    getConnection().close();
+            if (connection != null) {
+                if (!connectionList.offer(connection, 15, TimeUnit.SECONDS)) {
+                    connection.close();
                 }
             }
         } catch (InterruptedException | SQLException ex) {
@@ -81,10 +81,10 @@ public class DBConnectionPool {
         }
     }
 
-    public PreparedStatement getPreparedStatement(String sql) throws SQLException{
-        if(getConnection() != null) {
+    public PreparedStatement getPreparedStatement(String sql, Connection connection) throws SQLException{
+        if(connection != null) {
             try {
-                PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 if(preparedStatement != null) {
                     return preparedStatement;
                 }

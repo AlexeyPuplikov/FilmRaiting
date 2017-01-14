@@ -2,33 +2,41 @@ package by.epam.filmrating.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Film extends Entity{
-    private int filmId;
+
     private String name;
     private Date year;
     private String country;
     private String description;
     private Date premiere;
     private int time;
-    private ArrayList<StageDirector> stageDirectors = new ArrayList<StageDirector>();
-    private ArrayList<Genre> genres = new ArrayList<Genre>();
-    private ArrayList<Actor> actors = new ArrayList<Actor>();
-    private ArrayList<Comment> comments = new ArrayList<Comment>();
+    private List<StageDirector> stageDirectors = new ArrayList<StageDirector>();
+    private List<Genre> genres = new ArrayList<Genre>();
+    private List<Actor> actors = new ArrayList<Actor>();
+    private List<Comment> comments = new ArrayList<Comment>();
 
-    public Film(int filmId, String name, Date year, String country, String description, Date premiere, int time) {
-        this.filmId = filmId;
+    public Film() {
+        super();
+    }
+
+    public Film(int filmId, String name, Date year, String country, String description, Date premiere, int time, ArrayList<StageDirector> stageDirectors, ArrayList<Genre> genres, ArrayList<Actor> actors, ArrayList<Comment> comments) {
+        super(filmId);
         this.name = name;
         this.year = year;
         this.country = country;
         this.description = description;
         this.premiere = premiere;
         this.time = time;
+        this.stageDirectors = stageDirectors;
+        this.genres = genres;
+        this.actors = actors;
+        this.comments = comments;
     }
 
-
     public int getFilmId() {
-        return filmId;
+        return super.getId();
     }
 
     public String getName() {
@@ -55,30 +63,74 @@ public class Film extends Entity{
         return time;
     }
 
-    public ArrayList<StageDirector> getStageDirectors() {
+    public List<StageDirector> getStageDirectors() {
         return stageDirectors;
     }
 
-    public ArrayList<Genre> getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 
-    public ArrayList<Actor> getActors() {
+    public List<Actor> getActors() {
         return actors;
     }
 
-    public ArrayList<Comment> getComments() {
+    public List<Comment> getComments() {
         return comments;
+    }
+
+    public void setFilmId(int filmId) {
+        super.setId(filmId);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setYear(Date year) {
+        this.year = year;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPremiere(Date premiere) {
+        this.premiere = premiere;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public void setStageDirectors(ArrayList<StageDirector> stageDirectors) {
+        this.stageDirectors = stageDirectors;
+    }
+
+    public void setGenres(ArrayList<Genre> genres) {
+        this.genres = genres;
+    }
+
+    public void setActors(ArrayList<Actor> actors) {
+        this.actors = actors;
+    }
+
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         Film film = (Film) o;
 
-        if (filmId != film.filmId) return false;
         if (time != film.time) return false;
         if (!name.equals(film.name)) return false;
         if (!year.equals(film.year)) return false;
@@ -94,7 +146,7 @@ public class Film extends Entity{
 
     @Override
     public int hashCode() {
-        int result = filmId;
+        int result = super.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + year.hashCode();
         result = 31 * result + country.hashCode();
@@ -111,8 +163,7 @@ public class Film extends Entity{
     @Override
     public String toString() {
         return "Film{" +
-                "filmId=" + filmId +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", year=" + year +
                 ", country='" + country + '\'' +
                 ", description='" + description + '\'' +
@@ -122,6 +173,6 @@ public class Film extends Entity{
                 ", genres=" + genres +
                 ", actors=" + actors +
                 ", comments=" + comments +
-                '}';
+                "} " + super.toString();
     }
 }

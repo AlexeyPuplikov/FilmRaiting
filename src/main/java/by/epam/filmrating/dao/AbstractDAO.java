@@ -18,8 +18,8 @@ public abstract class AbstractDAO<K, T extends Entity>{
     public abstract boolean create(T entity);
     public abstract T update(T entity);
 
-    public void closeConnection() {
-        connectionPool.freeConnection();
+    public void closeConnection(Connection connection) {
+        connectionPool.freeConnection(connection);
     }
 
     void closeStatement(PreparedStatement preparedStatement) {
