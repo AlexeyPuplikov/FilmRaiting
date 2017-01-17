@@ -2,10 +2,12 @@ import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.dao.ActorDAO;
 import by.epam.filmrating.dao.FilmDAO;
 import by.epam.filmrating.entity.Actor;
+import by.epam.filmrating.exception.ConnectionPoolException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Test {
     /*private final static String SQL_INSERT = "INSERT INTO actor(ACTOR_ID, NAME, DATE_OF_BIRTH, INFO) VALUES(?,?,?,?)";
@@ -42,6 +44,14 @@ public class Test {
     }*/
     public static void main(String[] args) {
         ActorDAO dao = new ActorDAO();
-        System.out.print(dao.findAll());
+        try {
+            List<Actor> actors = dao.findAll();
+
+            actors.get(0).setActorId(4);
+            Actor actor = actors.get(0);
+            System.out.print(dao.create(actor));
+        } catch (ConnectionPoolException e) {
+            e.printStackTrace();
+        }
     }
 }

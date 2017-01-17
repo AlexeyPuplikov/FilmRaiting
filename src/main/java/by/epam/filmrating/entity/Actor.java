@@ -2,7 +2,7 @@ package by.epam.filmrating.entity;
 
 import java.util.Date;
 
-public class Actor extends Entity{
+public class Actor extends Entity {
     private String name;
     private Date dateOfBirth;
     private String info;
@@ -22,12 +22,12 @@ public class Actor extends Entity{
         return super.getId();
     }
 
-    public String getName() {
-        return name;
-    }
-
     public Date getDateOfBirth() {
         return dateOfBirth;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getInfo() {

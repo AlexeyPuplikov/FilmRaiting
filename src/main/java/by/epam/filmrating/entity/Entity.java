@@ -1,6 +1,8 @@
 package by.epam.filmrating.entity;
 
-public class Entity {
+import java.util.Date;
+
+public abstract class Entity {
     private int id;
 
     public Entity() {

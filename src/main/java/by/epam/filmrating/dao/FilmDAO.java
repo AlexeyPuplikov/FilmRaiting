@@ -3,6 +3,7 @@ package by.epam.filmrating.dao;
 import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.Entity;
 import by.epam.filmrating.entity.Film;
+import by.epam.filmrating.exception.ConnectionPoolException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilmDAO extends AbstractDAO{
+public class FilmDAO extends AbstractDAO {
 
     private final static String SELECT_ALL_FILM = "SELECT * FROM film";
 
@@ -20,7 +21,7 @@ public class FilmDAO extends AbstractDAO{
     }
 
     @Override
-    public List<Film> findAll() {
+    public List<Film> findAll() throws ConnectionPoolException {
         List<Film> films = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         Connection connection = connectionPool.getConnection();
@@ -43,7 +44,7 @@ public class FilmDAO extends AbstractDAO{
     }
 
     @Override
-    public Entity findEntityById(Object id) {
+    public Entity findEntityById(int id) throws ConnectionPoolException {
         return null;
     }
 
@@ -53,7 +54,7 @@ public class FilmDAO extends AbstractDAO{
     }
 
     @Override
-    public boolean delete(Object id) {
+    public boolean delete(int id) {
         return false;
     }
 

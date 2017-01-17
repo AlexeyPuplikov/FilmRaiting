@@ -1,6 +1,6 @@
 package by.epam.filmrating.entity;
 
-public class User extends Entity{
+public class User extends Entity {
 
     private String login;
     private String password;

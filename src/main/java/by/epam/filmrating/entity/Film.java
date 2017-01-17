@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Film extends Entity{
+public class Film extends Entity {
 
     private String name;
     private Date year;

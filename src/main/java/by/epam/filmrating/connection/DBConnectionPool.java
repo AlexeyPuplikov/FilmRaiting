@@ -1,5 +1,9 @@
 package by.epam.filmrating.connection;
 
+import by.epam.filmrating.exception.ConnectionPoolException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -12,6 +16,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class DBConnectionPool {
+    private final static Logger LOG = LogManager.getLogger(DBConnectionPool.class);
 
     private final static String DB_POOL_SIZE = "db.poolsize";
     private final static String DB_DRIVER_CLASS = "db.driver";
@@ -43,20 +48,20 @@ public class DBConnectionPool {
                 connectionList.add(DriverManager.getConnection(DBUrl, DBuser, DBpassword));
             }
         } catch (IOException | SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+            LOG.fatal("Не удалось создать соединение", ex);
         }
     }
 
-    public static class PoolHolder {
-        public static final DBConnectionPool HOLDER_INSTANCE = new DBConnectionPool();
+    private static class PoolHolder {
+        private static final DBConnectionPool HOLDER_INSTANCE = new DBConnectionPool();
     }
 
     public static DBConnectionPool getInstance() {
         return PoolHolder.HOLDER_INSTANCE;
     }
 
-    public Connection getConnection() {
-        Connection connection = null;
+    public Connection getConnection() throws ConnectionPoolException {
+        Connection connection;
         try {
             connection = connectionList.poll(15, TimeUnit.SECONDS);
             if (connection == null) {
@@ -64,12 +69,12 @@ public class DBConnectionPool {
                 connectionList.add(connection);
             }
         } catch (InterruptedException | SQLException ex) {
-            ex.printStackTrace();
+            throw new ConnectionPoolException("Не удалось получить соединение", ex);
         }
         return connection;
     }
 
-    public void freeConnection(Connection connection) {
+    public void freeConnection(Connection connection) throws ConnectionPoolException {
         try {
             if (connection != null) {
                 if (!connectionList.offer(connection, 15, TimeUnit.SECONDS)) {
@@ -77,30 +82,30 @@ public class DBConnectionPool {
                 }
             }
         } catch (InterruptedException | SQLException ex) {
-            ex.printStackTrace();
+            throw new ConnectionPoolException("Не удалось вернуть соединение", ex);
         }
     }
 
-    public PreparedStatement getPreparedStatement(String sql, Connection connection) throws SQLException{
+    public PreparedStatement getPreparedStatement(String sql, Connection connection) throws ConnectionPoolException {
         if(connection != null) {
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 if(preparedStatement != null) {
                     return preparedStatement;
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException ex) {
+                throw new ConnectionPoolException("", ex);
             }
         }
-        throw new SQLException();
+        throw new ConnectionPoolException("");
     }
 
-    public void closePrepareStatement(PreparedStatement preparedStatement) {
+    public void closePrepareStatement(PreparedStatement preparedStatement) throws ConnectionPoolException {
         if(preparedStatement != null) {
             try {
                 preparedStatement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException ex) {
+                throw new ConnectionPoolException("", ex);
             }
         }
     }

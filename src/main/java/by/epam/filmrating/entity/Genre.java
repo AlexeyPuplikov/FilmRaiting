@@ -1,6 +1,6 @@
 package by.epam.filmrating.entity;
 
-public class Genre extends Entity{
+public class Genre extends Entity {
 
     private EnumGenre name;
 
@@ -17,8 +17,8 @@ public class Genre extends Entity{
         return super.getId();
     }
 
-    public EnumGenre getName() {
-        return name;
+    public String getName() {
+        return null;
     }
 
     public void setGenreId(int genreId) {

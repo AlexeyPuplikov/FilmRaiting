@@ -1,6 +1,6 @@
 package by.epam.filmrating.entity;
 
-public class Rating extends Entity{
+public class Rating extends Entity {
     private int filmId;
     private int userId;
     private int mark;
