@@ -3,7 +3,6 @@ package by.epam.filmrating.entity;
 import java.util.Date;
 
 public class StageDirector extends Entity {
-
     private String name;
     private Date dateOfBirth;
     private String info;
@@ -56,13 +55,8 @@ public class StageDirector extends Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         StageDirector that = (StageDirector) o;
-
-        if (!name.equals(that.name)) return false;
-        if (!dateOfBirth.equals(that.dateOfBirth)) return false;
-        return info.equals(that.info);
-
+        return name.equals(that.name) && dateOfBirth.equals(that.dateOfBirth) && info.equals(that.info);
     }
 
     @Override

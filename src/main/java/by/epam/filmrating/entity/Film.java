@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Film extends Entity {
-
     private String name;
     private Date year;
     private String country;
@@ -21,7 +20,7 @@ public class Film extends Entity {
         super();
     }
 
-    public Film(int filmId, String name, Date year, String country, String description, Date premiere, int time, ArrayList<StageDirector> stageDirectors, ArrayList<Genre> genres, ArrayList<Actor> actors, ArrayList<Comment> comments) {
+    public Film(int filmId, String name, Date year, String country, String description, Date premiere, int time, List<StageDirector> stageDirectors, List<Genre> genres, List<Actor> actors, List<Comment> comments) {
         super(filmId);
         this.name = name;
         this.year = year;
@@ -128,20 +127,8 @@ public class Film extends Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         Film film = (Film) o;
-
-        if (time != film.time) return false;
-        if (!name.equals(film.name)) return false;
-        if (!year.equals(film.year)) return false;
-        if (!country.equals(film.country)) return false;
-        if (!description.equals(film.description)) return false;
-        if (!premiere.equals(film.premiere)) return false;
-        if (!stageDirectors.equals(film.stageDirectors)) return false;
-        if (!genres.equals(film.genres)) return false;
-        if (!actors.equals(film.actors)) return false;
-        return comments.equals(film.comments);
-
+        return time == film.time && name.equals(film.name) && year.equals(film.year) && country.equals(film.country) && description.equals(film.description) && premiere.equals(film.premiere) && stageDirectors.equals(film.stageDirectors) && genres.equals(film.genres) && actors.equals(film.actors) && comments.equals(film.comments);
     }
 
     @Override

@@ -49,6 +49,7 @@ public class DBConnectionPool {
             }
         } catch (IOException | SQLException | ClassNotFoundException ex) {
             LOG.fatal("Не удалось создать соединение", ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -87,10 +88,10 @@ public class DBConnectionPool {
     }
 
     public PreparedStatement getPreparedStatement(String sql, Connection connection) throws ConnectionPoolException {
-        if(connection != null) {
+        if (connection != null) {
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                if(preparedStatement != null) {
+                if (preparedStatement != null) {
                     return preparedStatement;
                 }
             } catch (SQLException ex) {
@@ -101,7 +102,7 @@ public class DBConnectionPool {
     }
 
     public void closePrepareStatement(PreparedStatement preparedStatement) throws ConnectionPoolException {
-        if(preparedStatement != null) {
+        if (preparedStatement != null) {
             try {
                 preparedStatement.close();
             } catch (SQLException ex) {

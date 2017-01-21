@@ -1,7 +1,6 @@
 package by.epam.filmrating.entity;
 
 public class User extends Entity {
-
     private String login;
     private String password;
     private EnumStatus status;
@@ -64,14 +63,8 @@ public class User extends Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         User user = (User) o;
-
-        if (!login.equals(user.login)) return false;
-        if (!password.equals(user.password)) return false;
-        if (status != user.status) return false;
-        return role == user.role;
-
+        return login.equals(user.login) && password.equals(user.password) && status == user.status && role == user.role;
     }
 
     @Override

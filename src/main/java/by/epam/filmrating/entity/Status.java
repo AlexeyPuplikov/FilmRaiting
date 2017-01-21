@@ -1,31 +1,31 @@
 package by.epam.filmrating.entity;
 
-public class Genre extends Entity {
-    private EnumGenre name;
+public class Status extends Entity {
+    private EnumStatus name;
 
-    public Genre() {
+    public Status() {
         super();
     }
 
-    public Genre(int genreId, EnumGenre name) {
-        super(genreId);
+    public Status(int statusId, EnumStatus name) {
+        super(statusId);
         this.name = name;
     }
 
-    public int getGenreId() {
-        return super.getId();
-    }
-
-    public EnumGenre getName() {
+    public EnumStatus getName() {
         return name;
     }
 
-    public void setGenreId(int genreId) {
-        super.setId(genreId);
+    public void setName(EnumStatus name) {
+        this.name = name;
     }
 
-    public void setName(EnumGenre name) {
-        this.name = name;
+    public void setStatusId(int statusId) {
+        super.setId(statusId);
+    }
+
+    public int getStatusId() {
+        return super.getId();
     }
 
     @Override
@@ -33,8 +33,8 @@ public class Genre extends Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        Genre genre = (Genre) o;
-        return name == genre.name;
+        Status status = (Status) o;
+        return name == status.name;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class Genre extends Entity {
 
     @Override
     public String toString() {
-        return "Genre{" +
+        return "Status{" +
                 "name=" + name +
                 "} " + super.toString();
     }

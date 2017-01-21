@@ -1,7 +1,5 @@
 package by.epam.filmrating.entity;
 
-import java.util.Date;
-
 public abstract class Entity {
     private int id;
 
@@ -24,11 +22,8 @@ public abstract class Entity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Entity entity = (Entity) o;
-
         return id == entity.id;
-
     }
 
     @Override

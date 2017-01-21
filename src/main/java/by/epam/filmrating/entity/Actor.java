@@ -55,11 +55,8 @@ public class Actor extends Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         Actor actor = (Actor) o;
-
         return name.equals(actor.name) && dateOfBirth.equals(actor.dateOfBirth) && info.equals(actor.info);
-
     }
 
     @Override

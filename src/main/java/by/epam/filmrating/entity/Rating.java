@@ -9,10 +9,10 @@ public class Rating extends Entity {
         super();
     }
 
-    public Rating(int ratingId ,int filmId, int userId, int mark) {
+    public Rating(int ratingId ,int userId, int filmId, int mark) {
         super(ratingId);
-        this.filmId = filmId;
         this.userId = userId;
+        this.filmId = filmId;
         this.mark = mark;
     }
 
@@ -53,13 +53,8 @@ public class Rating extends Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         Rating rating = (Rating) o;
-
-        if (filmId != rating.filmId) return false;
-        if (userId != rating.userId) return false;
-        return mark == rating.mark;
-
+        return filmId == rating.filmId && userId == rating.userId && mark == rating.mark;
     }
 
     @Override
