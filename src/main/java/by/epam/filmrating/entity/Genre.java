@@ -1,22 +1,22 @@
 package by.epam.filmrating.entity;
 
 public class Genre extends Entity {
-    private EnumGenre name;
+    private String name;
 
     public Genre() {
         super();
     }
 
-    public Genre(int genreId, EnumGenre name) {
+    public Genre(int genreId, String name) {
         super(genreId);
-        this.name = name;
+        this.name = EnumGenre.valueOf(name).getName();
     }
 
     public int getGenreId() {
         return super.getId();
     }
 
-    public EnumGenre getName() {
+    public String getName() {
         return name;
     }
 
@@ -24,7 +24,7 @@ public class Genre extends Entity {
         super.setId(genreId);
     }
 
-    public void setName(EnumGenre name) {
+    public void setName(String name) {
         this.name = name;
     }
 

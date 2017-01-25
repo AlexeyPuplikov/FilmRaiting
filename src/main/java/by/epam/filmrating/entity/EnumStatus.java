@@ -2,7 +2,7 @@ package by.epam.filmrating.entity;
 
 public enum EnumStatus {
     NEW("Новичок"),
-    AMATURE("Любитель"),
+    AMATEUR("Любитель"),
     EXPERIENCED("Опытный"),
     CRITIC("Критик");
 

@@ -1,6 +1,6 @@
 package by.epam.filmrating.connection;
 
-import by.epam.filmrating.exception.ConnectionPoolException;
+import by.epam.filmrating.exception.DAOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,7 +61,7 @@ public class DBConnectionPool {
         return PoolHolder.HOLDER_INSTANCE;
     }
 
-    public Connection getConnection() throws ConnectionPoolException {
+    public Connection getConnection() throws DAOException {
         Connection connection;
         try {
             connection = connectionList.poll(15, TimeUnit.SECONDS);
@@ -70,12 +70,12 @@ public class DBConnectionPool {
                 connectionList.add(connection);
             }
         } catch (InterruptedException | SQLException ex) {
-            throw new ConnectionPoolException("Не удалось получить соединение", ex);
+            throw new DAOException("Не удалось получить соединение", ex);
         }
         return connection;
     }
 
-    public void freeConnection(Connection connection) throws ConnectionPoolException {
+    public void freeConnection(Connection connection) throws DAOException {
         try {
             if (connection != null) {
                 if (!connectionList.offer(connection, 15, TimeUnit.SECONDS)) {
@@ -83,11 +83,11 @@ public class DBConnectionPool {
                 }
             }
         } catch (InterruptedException | SQLException ex) {
-            throw new ConnectionPoolException("Не удалось вернуть соединение", ex);
+            throw new DAOException("Не удалось вернуть соединение", ex);
         }
     }
 
-    public PreparedStatement getPreparedStatement(String sql, Connection connection) throws ConnectionPoolException {
+    public PreparedStatement getPreparedStatement(String sql, Connection connection) throws DAOException {
         if (connection != null) {
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -95,18 +95,18 @@ public class DBConnectionPool {
                     return preparedStatement;
                 }
             } catch (SQLException ex) {
-                throw new ConnectionPoolException("", ex);
+                throw new DAOException("", ex);
             }
         }
-        throw new ConnectionPoolException("");
+        throw new DAOException("");
     }
 
-    public void closePrepareStatement(PreparedStatement preparedStatement) throws ConnectionPoolException {
+    public void closePrepareStatement(PreparedStatement preparedStatement) throws DAOException {
         if (preparedStatement != null) {
             try {
                 preparedStatement.close();
             } catch (SQLException ex) {
-                throw new ConnectionPoolException("", ex);
+                throw new DAOException("", ex);
             }
         }
     }

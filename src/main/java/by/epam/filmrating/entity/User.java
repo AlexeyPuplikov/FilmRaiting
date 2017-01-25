@@ -3,19 +3,19 @@ package by.epam.filmrating.entity;
 public class User extends Entity {
     private String login;
     private String password;
-    private EnumStatus status;
+    private String status;
     private EnumRole role;
 
     public User() {
         super();
     }
 
-    public User(int userId, String login, String password, EnumStatus status, EnumRole role) {
+    public User(int userId, String login, String password, String status, String role) {
         super(userId);
         this.login = login;
         this.password = password;
-        this.status = status;
-        this.role = role;
+        this.status = EnumStatus.valueOf(status).getName();
+        this.role = EnumRole.valueOf(role);
     }
 
     public int getUserId() {
@@ -30,7 +30,7 @@ public class User extends Entity {
         return password;
     }
 
-    public EnumStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -50,7 +50,7 @@ public class User extends Entity {
         this.password = password;
     }
 
-    public void setStatus(EnumStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

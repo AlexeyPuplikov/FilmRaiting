@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Film extends Entity {
     private String name;
-    private Date year;
+    private int year;
     private String country;
     private String description;
     private Date premiere;
@@ -20,7 +20,7 @@ public class Film extends Entity {
         super();
     }
 
-    public Film(int filmId, String name, Date year, String country, String description, Date premiere, int time, List<StageDirector> stageDirectors, List<Genre> genres, List<Actor> actors, List<Comment> comments) {
+    public Film(int filmId, String name, int year, String country, String description, Date premiere, int time, List<StageDirector> stageDirectors, List<Genre> genres, List<Actor> actors, List<Comment> comments) {
         super(filmId);
         this.name = name;
         this.year = year;
@@ -42,7 +42,7 @@ public class Film extends Entity {
         return name;
     }
 
-    public Date getYear() {
+    public int getYear() {
         return year;
     }
 
@@ -86,7 +86,7 @@ public class Film extends Entity {
         this.name = name;
     }
 
-    public void setYear(Date year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
@@ -106,19 +106,19 @@ public class Film extends Entity {
         this.time = time;
     }
 
-    public void setStageDirectors(ArrayList<StageDirector> stageDirectors) {
+    public void setStageDirectors(List<StageDirector> stageDirectors) {
         this.stageDirectors = stageDirectors;
     }
 
-    public void setGenres(ArrayList<Genre> genres) {
+    public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
 
-    public void setActors(ArrayList<Actor> actors) {
+    public void setActors(List<Actor> actors) {
         this.actors = actors;
     }
 
-    public void setComments(ArrayList<Comment> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
@@ -128,14 +128,14 @@ public class Film extends Entity {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Film film = (Film) o;
-        return time == film.time && name.equals(film.name) && year.equals(film.year) && country.equals(film.country) && description.equals(film.description) && premiere.equals(film.premiere) && stageDirectors.equals(film.stageDirectors) && genres.equals(film.genres) && actors.equals(film.actors) && comments.equals(film.comments);
+        return year == film.year && time == film.time && name.equals(film.name) && country.equals(film.country) && description.equals(film.description) && premiere.equals(film.premiere) && stageDirectors.equals(film.stageDirectors) && genres.equals(film.genres) && actors.equals(film.actors) && comments.equals(film.comments);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + name.hashCode();
-        result = 31 * result + year.hashCode();
+        result = 31 * result + year;
         result = 31 * result + country.hashCode();
         result = 31 * result + description.hashCode();
         result = 31 * result + premiere.hashCode();
