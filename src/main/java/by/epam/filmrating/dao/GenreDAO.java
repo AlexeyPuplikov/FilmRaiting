@@ -3,6 +3,7 @@ package by.epam.filmrating.dao;
 import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.EnumGenre;
 import by.epam.filmrating.entity.Genre;
+import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
 
 import java.sql.Connection;
@@ -27,7 +28,7 @@ public class GenreDAO extends AbstractDAO<Genre> {
     }
 
     @Override
-    public List<Genre> findAll() throws DAOException {
+    public List<Genre> findAll() throws DAOException, ConnectionPoolException {
         List<Genre> genres = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_GENRE, connection);
@@ -45,7 +46,7 @@ public class GenreDAO extends AbstractDAO<Genre> {
     }
 
     @Override
-    public Genre findEntityById (int id) throws DAOException {
+    public Genre findEntityById (int id) throws DAOException, ConnectionPoolException {
         Connection connection = connectionPool.getConnection();
         Genre genre = null;
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_GENRE_BY_ID, connection)) {
@@ -63,12 +64,12 @@ public class GenreDAO extends AbstractDAO<Genre> {
     }
 
     @Override
-    public boolean delete(int id) throws DAOException {
+    public boolean delete(int id) throws DAOException, ConnectionPoolException {
         return super.deleteHandler(id, DELETE_GENRE);
     }
 
     @Override
-    public boolean create(Genre genre) throws DAOException {
+    public boolean create(Genre genre) throws DAOException, ConnectionPoolException {
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(INSERT_GENRE, connection)) {
             preparedStatement.setInt(1, genre.getGenreId());
@@ -80,7 +81,7 @@ public class GenreDAO extends AbstractDAO<Genre> {
     }
 
     @Override
-    public List<Genre> findFilmEntity(int filmId) throws DAOException {
+    public List<Genre> findFilmEntity(int filmId) throws DAOException, ConnectionPoolException {
         List<Genre> genres = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_GENRE, connection)) {

@@ -2,6 +2,7 @@ package by.epam.filmrating.dao;
 
 import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.Actor;
+import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
 
 import java.sql.Connection;
@@ -29,7 +30,7 @@ public class ActorDAO extends AbstractDAO<Actor> {
     }
 
     @Override
-    public List<Actor> findAll() throws DAOException {
+    public List<Actor> findAll() throws DAOException, ConnectionPoolException {
         List<Actor> actors = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_ACTOR, connection);
@@ -47,7 +48,7 @@ public class ActorDAO extends AbstractDAO<Actor> {
     }
 
     @Override
-    public Actor findEntityById(int id) throws DAOException {
+    public Actor findEntityById(int id) throws DAOException, ConnectionPoolException {
         Connection connection = connectionPool.getConnection();
         Actor actor = null;
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_ACTOR_BY_ID, connection)) {
@@ -65,12 +66,12 @@ public class ActorDAO extends AbstractDAO<Actor> {
     }
 
     @Override
-    public boolean delete(int id) throws DAOException {
+    public boolean delete(int id) throws DAOException, ConnectionPoolException {
         return super.deleteHandler(id, DELETE_ACTOR);
     }
 
     @Override
-    public boolean create(Actor actor) throws DAOException {
+    public boolean create(Actor actor) throws DAOException, ConnectionPoolException {
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(INSERT_ACTOR, connection)) {
             preparedStatement.setInt(1, actor.getActorId());
@@ -86,7 +87,7 @@ public class ActorDAO extends AbstractDAO<Actor> {
     }
 
     @Override
-    public List<Actor> findFilmEntity(int filmID) throws DAOException {
+    public List<Actor> findFilmEntity(int filmID) throws DAOException, ConnectionPoolException {
         List<Actor> actors = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_ACTOR, connection)) {

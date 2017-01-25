@@ -1,6 +1,6 @@
 package by.epam.filmrating.exception;
 
-public class ServiceException extends Exception{
+public class ServiceException extends Exception {
     public ServiceException() {
         super();
     }

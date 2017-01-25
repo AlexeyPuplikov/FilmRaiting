@@ -1,5 +1,6 @@
 import by.epam.filmrating.dao.*;
 import by.epam.filmrating.entity.*;
+import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
 
 public class Test {
@@ -14,10 +15,11 @@ public class Test {
         rating.setMark(8);
         try {
             Film film;
-            System.out.println(filmDAO.findAll());
-            System.out.println(filmDAO.findFilmRating(2));
-            filmDAO.setFilmRating(rating);
-            System.out.println(filmDAO.findUserMarkToFilm(1, 1));
+            //System.out.println(filmDAO.findAll());
+            //System.out.println(filmDAO.findFilmRating(2));
+            //filmDAO.setFilmRating(rating);
+           // System.out.println(filmDAO.findUserMarkToFilm(1, 1));
+            System.out.println(actorDAO.findEntityById(2));
             //System.out.println(filmDAO.findEntityById(3));
             //film = filmDAO.findEntityById(3);
             //film.setFilmId(10);
@@ -29,6 +31,8 @@ public class Test {
             //System.out.println(filmDAO.findFilmByActor(2));
             //dao.delete(1);
         } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (ConnectionPoolException e) {
             e.printStackTrace();
         }
     }

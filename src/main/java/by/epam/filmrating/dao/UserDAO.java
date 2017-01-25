@@ -4,6 +4,7 @@ import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.EnumRole;
 import by.epam.filmrating.entity.EnumStatus;
 import by.epam.filmrating.entity.User;
+import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
 
 import java.sql.*;
@@ -27,7 +28,7 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     @Override
-    public List<User> findAll() throws DAOException {
+    public List<User> findAll() throws DAOException, ConnectionPoolException {
         List<User> users = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_USER, connection);
@@ -45,7 +46,7 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     @Override
-    public User findEntityById(int id) throws DAOException {
+    public User findEntityById(int id) throws DAOException, ConnectionPoolException {
         Connection connection = connectionPool.getConnection();
         User user = null;
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_USER_BY_ID, connection)) {
@@ -63,7 +64,7 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     @Override
-    public boolean create(User user) throws DAOException {
+    public boolean create(User user) throws DAOException, ConnectionPoolException {
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(INSERT_USER, connection)) {
             preparedStatement.setInt(1, user.getUserId());
@@ -87,7 +88,7 @@ public class UserDAO extends AbstractDAO<User> {
         return null;
     }
 
-    public boolean updateStatus(int userId, String status) throws DAOException {
+    public boolean updateStatus(int userId, String status) throws DAOException, ConnectionPoolException {
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(UPDATE_STATUS, connection)) {
             preparedStatement.setInt(1, EnumStatus.valueOf(status).ordinal() + 1);

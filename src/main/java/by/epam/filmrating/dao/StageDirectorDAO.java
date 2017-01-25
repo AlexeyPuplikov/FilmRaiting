@@ -2,6 +2,7 @@ package by.epam.filmrating.dao;
 
 import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.StageDirector;
+import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
 
 import javax.print.attribute.standard.MediaSize;
@@ -30,7 +31,7 @@ public class StageDirectorDAO extends AbstractDAO<StageDirector> {
     }
 
     @Override
-    public List<StageDirector> findAll() throws DAOException {
+    public List<StageDirector> findAll() throws DAOException, ConnectionPoolException {
         List<StageDirector> stageDirectors = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_STAGE_DIRECTOR, connection);
@@ -48,7 +49,7 @@ public class StageDirectorDAO extends AbstractDAO<StageDirector> {
     }
 
     @Override
-    public StageDirector findEntityById(int id) throws DAOException {
+    public StageDirector findEntityById(int id) throws DAOException, ConnectionPoolException {
         Connection connection = connectionPool.getConnection();
         StageDirector stageDirector = null;
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_STAGE_DIRECTOR_BY_ID, connection)) {
@@ -66,12 +67,12 @@ public class StageDirectorDAO extends AbstractDAO<StageDirector> {
     }
 
     @Override
-    public boolean delete(int id) throws DAOException {
+    public boolean delete(int id) throws DAOException, ConnectionPoolException {
         return super.deleteHandler(id, DELETE_STAGE_DIRECTOR);
     }
 
     @Override
-    public boolean create(StageDirector stageDirector) throws DAOException {
+    public boolean create(StageDirector stageDirector) throws DAOException, ConnectionPoolException {
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(INSERT_STAGE_DIRECTOR, connection)) {
             preparedStatement.setInt(1, stageDirector.getStageDirectorId());
@@ -85,7 +86,7 @@ public class StageDirectorDAO extends AbstractDAO<StageDirector> {
     }
 
     @Override
-    public List<StageDirector> findFilmEntity(int filmId) throws DAOException {
+    public List<StageDirector> findFilmEntity(int filmId) throws DAOException, ConnectionPoolException {
         List<StageDirector> stageDirectors = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_STAGE_DIRECTOR, connection)) {

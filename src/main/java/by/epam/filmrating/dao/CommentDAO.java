@@ -2,6 +2,7 @@ package by.epam.filmrating.dao;
 
 import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.Comment;
+import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
 
 import java.sql.*;
@@ -24,12 +25,12 @@ public class CommentDAO extends AbstractDAO<Comment> {
     }
 
     @Override
-    public boolean delete(int id) throws DAOException {
+    public boolean delete(int id) throws DAOException, ConnectionPoolException {
         return super.deleteHandler(id, DELETE_COMMENT);
     }
 
     @Override
-    public boolean create(Comment comment) throws DAOException {
+    public boolean create(Comment comment) throws DAOException, ConnectionPoolException {
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(INSERT_COMMENT, connection)) {
             preparedStatement.setInt(1, comment.getCommentId());
@@ -43,7 +44,7 @@ public class CommentDAO extends AbstractDAO<Comment> {
     }
 
     @Override
-    public List<Comment> findFilmEntity(int filmId) throws DAOException {
+    public List<Comment> findFilmEntity(int filmId) throws DAOException, ConnectionPoolException {
         List<Comment> comments = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try(PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_COMMENT, connection)) {
