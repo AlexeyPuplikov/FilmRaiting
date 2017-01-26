@@ -1,7 +1,5 @@
 package by.epam.filmrating.entity;
 
-import java.util.Date;
-
 public class Comment extends Entity {
     private String text;
     private int filmId;

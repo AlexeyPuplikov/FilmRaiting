@@ -11,6 +11,10 @@ import java.util.List;
 public class FilmService extends AbstractService<Film> {
     private FilmDAO filmDAO;
 
+    public FilmService() {
+        filmDAO = new FilmDAO();
+    }
+
     @Override
     public List<Film> findAll() throws ServiceException {
         List<Film> films;

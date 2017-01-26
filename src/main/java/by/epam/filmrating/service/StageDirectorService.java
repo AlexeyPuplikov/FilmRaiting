@@ -11,6 +11,10 @@ import java.util.List;
 public class StageDirectorService extends AbstractService<StageDirector> {
     private StageDirectorDAO stageDirectorDAO;
 
+    public StageDirectorService() {
+        stageDirectorDAO = new StageDirectorDAO();
+    }
+
     @Override
     public List<StageDirector> findAll() throws ServiceException {
         List<StageDirector> stageDirectors;

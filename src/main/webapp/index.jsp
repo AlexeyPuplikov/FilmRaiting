@@ -1,14 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>JSP Timing</title>
+    <title>index</title>
 </head>
 <body>
-    <h5>Время</h5>
-    <jsp:useBean id="calendar" class="java.util.GregorianCalendar"/>
-    <form name="Simple" action="timeaction" method="POST">
-        <input type="hidden" name="time" value="${calendar.timeInMillis}"/>
-        <input type="submit" name="button" value="Посчитать время"/>
-    </form>
+<form name="aaa" action="controller" method="post">
+    <input type="hidden" name="command" value="view_films"/>
+    <input type="submit" value="view all films">
+</form>
 </body>
 </html>

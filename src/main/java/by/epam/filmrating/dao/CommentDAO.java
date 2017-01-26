@@ -1,9 +1,9 @@
 package by.epam.filmrating.dao;
 
-import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.Comment;
-import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
+import by.epam.filmrating.connection.DBConnectionPool;
+import by.epam.filmrating.exception.ConnectionPoolException;
 
 import java.sql.*;
 import java.util.ArrayList;

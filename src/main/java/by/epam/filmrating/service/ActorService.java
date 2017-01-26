@@ -1,7 +1,7 @@
 package by.epam.filmrating.service;
 
-import by.epam.filmrating.dao.ActorDAO;
 import by.epam.filmrating.entity.Actor;
+import by.epam.filmrating.dao.ActorDAO;
 import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
 import by.epam.filmrating.exception.ServiceException;
@@ -10,6 +10,10 @@ import java.util.List;
 
 public class ActorService extends AbstractService<Actor> {
     private ActorDAO actorDAO;
+
+    public ActorService() {
+        actorDAO = new ActorDAO();
+    }
 
     @Override
     public List<Actor> findAll() throws ServiceException {

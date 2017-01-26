@@ -1,9 +1,6 @@
 package by.epam.filmrating.connection;
 
 import by.epam.filmrating.exception.ConnectionPoolException;
-import by.epam.filmrating.exception.DAOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,8 +14,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class DBConnectionPool {
-    private final static Logger LOG = LogManager.getLogger(DBConnectionPool.class);
-
     private final static String DB_POOL_SIZE = "db.poolsize";
     private final static String DB_DRIVER_CLASS = "db.driver";
     private final static String DB_URL = "db.url";
@@ -49,7 +44,6 @@ public class DBConnectionPool {
                 connectionList.add(DriverManager.getConnection(DBUrl, DBuser, DBpassword));
             }
         } catch (IOException | SQLException | ClassNotFoundException ex) {
-            LOG.fatal("Не удалось создать соединение", ex);
             throw new RuntimeException(ex);
         }
     }

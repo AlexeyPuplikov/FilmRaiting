@@ -1,11 +1,11 @@
 package by.epam.filmrating.dao;
 
+import by.epam.filmrating.exception.DAOException;
 import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.EnumRole;
 import by.epam.filmrating.entity.EnumStatus;
 import by.epam.filmrating.entity.User;
 import by.epam.filmrating.exception.ConnectionPoolException;
-import by.epam.filmrating.exception.DAOException;
 
 import java.sql.*;
 import java.util.ArrayList;

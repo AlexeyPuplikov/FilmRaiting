@@ -5,7 +5,6 @@ import by.epam.filmrating.entity.StageDirector;
 import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
 
-import javax.print.attribute.standard.MediaSize;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;

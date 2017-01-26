@@ -1,7 +1,6 @@
 package by.epam.filmrating.dao;
 
 import by.epam.filmrating.connection.DBConnectionPool;
-import by.epam.filmrating.entity.EnumGenre;
 import by.epam.filmrating.entity.Genre;
 import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;

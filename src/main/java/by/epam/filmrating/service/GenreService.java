@@ -11,6 +11,10 @@ import java.util.List;
 public class GenreService extends AbstractService<Genre> {
     private GenreDAO genreDAO;
 
+    public GenreService() {
+        genreDAO = new GenreDAO();
+    }
+
     @Override
     public List<Genre> findAll() throws ServiceException {
         List<Genre> genres;

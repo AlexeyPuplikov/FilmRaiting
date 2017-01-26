@@ -1,13 +1,13 @@
 package by.epam.filmrating.dao;
 
-import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.Actor;
 import by.epam.filmrating.entity.Film;
 import by.epam.filmrating.entity.Genre;
+import by.epam.filmrating.exception.DAOException;
+import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.Rating;
 import by.epam.filmrating.entity.StageDirector;
 import by.epam.filmrating.exception.ConnectionPoolException;
-import by.epam.filmrating.exception.DAOException;
 
 import java.sql.Connection;
 import java.sql.Date;

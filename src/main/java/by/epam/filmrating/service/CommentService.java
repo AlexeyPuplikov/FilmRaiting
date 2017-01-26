@@ -11,6 +11,10 @@ import java.util.List;
 public class CommentService extends AbstractService<Comment> {
     private CommentDAO commentDAO;
 
+    public CommentService() {
+        commentDAO = new CommentDAO();
+    }
+
     @Override
     public List<Comment> findAll() throws ServiceException {
         return null;
