@@ -1,19 +1,17 @@
-import by.epam.filmrating.dao.ActorDAO;
-import by.epam.filmrating.dao.FilmDAO;
-import by.epam.filmrating.dao.GenreDAO;
-import by.epam.filmrating.dao.StageDirectorDAO;
-import by.epam.filmrating.entity.Film;
 import by.epam.filmrating.entity.Rating;
-import by.epam.filmrating.exception.ConnectionPoolException;
-import by.epam.filmrating.exception.DAOException;
+import by.epam.filmrating.entity.User;
 import by.epam.filmrating.exception.ServiceException;
-import by.epam.filmrating.service.FilmService;
+import by.epam.filmrating.service.*;
 
 public class Test {
     public static void main(String[] args) {
-        FilmService filmService = new FilmService();
+        FilmService service = new FilmService();
+        Rating rating = new Rating();
+        rating.setUserId(4);
+        rating.setFilmId(1);
+        rating.setMark(2);
         try {
-            System.out.println(filmService.findAll());
+            System.out.println(service.setFilmRating(rating));
         } catch (ServiceException e) {
             e.printStackTrace();
         }

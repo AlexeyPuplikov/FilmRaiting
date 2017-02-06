@@ -2,7 +2,6 @@ package by.epam.filmrating.service;
 
 import by.epam.filmrating.dao.GenreDAO;
 import by.epam.filmrating.entity.Genre;
-import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
 import by.epam.filmrating.exception.ServiceException;
 
@@ -12,7 +11,7 @@ public class GenreService extends AbstractService<Genre> {
     private GenreDAO genreDAO;
 
     public GenreService() {
-        genreDAO = new GenreDAO();
+        this.genreDAO = new GenreDAO();
     }
 
     @Override
@@ -20,8 +19,11 @@ public class GenreService extends AbstractService<Genre> {
         List<Genre> genres;
         try {
             genres = genreDAO.findAll();
-        } catch (DAOException | ConnectionPoolException ex) {
-            throw new ServiceException("", ex);
+            LOG.info("Retrieving genre list: " + genres.size());
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving genres list. ", ex);
+            throw new ServiceException(ex);
         }
         return genres;
     }
@@ -31,8 +33,11 @@ public class GenreService extends AbstractService<Genre> {
         Genre genre;
         try {
             genre = genreDAO.findEntityById(id);
-        } catch (DAOException | ConnectionPoolException ex) {
-            throw new ServiceException("", ex);
+            LOG.info("Retrieving genre by id: " + id);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving genre by id. ", ex);
+            throw new ServiceException(ex);
         }
         return genre;
     }
@@ -40,28 +45,62 @@ public class GenreService extends AbstractService<Genre> {
     @Override
     public boolean delete(int id) throws ServiceException {
         try {
+            LOG.info("Deleting genre by id: " + id);
             return genreDAO.delete(id);
-        } catch (DAOException | ConnectionPoolException ex) {
-            throw new ServiceException("", ex);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while deleting genre by id. ", ex);
+            throw new ServiceException(ex);
         }
     }
 
     @Override
     public boolean create(Genre entity) throws ServiceException {
         try {
+            LOG.info("creating genre");
             return genreDAO.create(entity);
-        } catch (DAOException | ConnectionPoolException ex) {
+        } catch (DAOException ex) {
+            LOG.error("Error while creating genre. ", ex);
             throw new ServiceException("", ex);
         }
     }
 
     @Override
-    public List<Genre> findFilmEntity(int id) throws ServiceException {
+    public List<Genre> findEntitiesByFilm(int id) throws ServiceException {
         List<Genre> genres;
         try {
-            genres = genreDAO.findFilmEntity(id);
-        } catch (DAOException | ConnectionPoolException ex) {
-            throw new ServiceException("", ex);
+            genres = genreDAO.findEntitiesByFilm(id);
+            LOG.info("Retrieving genres by film id: " + id);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving genres by film. ", ex);
+            throw new ServiceException(ex);
+        }
+        return genres;
+    }
+
+    public Genre findEntityByName(String name) throws ServiceException {
+        Genre genre;
+        try {
+            genre = genreDAO.findEntityByName(name);
+            LOG.info("Retrieving genre by name: " + name);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving genre by name. ", ex);
+            throw new ServiceException(ex);
+        }
+        return genre;
+    }
+
+    public List<Genre> findEntitiesNotInFilm(int id) throws ServiceException {
+        List<Genre> genres;
+        try {
+            genres = genreDAO.findEntitiesNotInFilm(id);
+            LOG.info("Retrieving genres by film id: " + id);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving genres by film. ", ex);
+            throw new ServiceException(ex);
         }
         return genres;
     }

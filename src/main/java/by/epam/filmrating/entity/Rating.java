@@ -1,15 +1,15 @@
 package by.epam.filmrating.entity;
 
 public class Rating extends Entity {
-    private int filmId;
     private int userId;
+    private int filmId;
     private int mark;
 
     public Rating() {
         super();
     }
 
-    public Rating(int ratingId ,int userId, int filmId, int mark) {
+    public Rating(int ratingId, int userId, int filmId, int mark) {
         super(ratingId);
         this.userId = userId;
         this.filmId = filmId;

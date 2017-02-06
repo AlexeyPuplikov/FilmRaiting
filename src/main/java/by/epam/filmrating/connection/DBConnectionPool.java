@@ -1,7 +1,5 @@
 package by.epam.filmrating.connection;
 
-import by.epam.filmrating.exception.ConnectionPoolException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -44,7 +42,7 @@ public class DBConnectionPool {
                 connectionList.add(DriverManager.getConnection(DBUrl, DBuser, DBpassword));
             }
         } catch (IOException | SQLException | ClassNotFoundException ex) {
-            throw new RuntimeException(ex);
+            throw new RuntimeException("Failed to create instance of ConnectionPool", ex);
         }
     }
 
@@ -56,7 +54,7 @@ public class DBConnectionPool {
         return PoolHolder.HOLDER_INSTANCE;
     }
 
-    public Connection getConnection() throws ConnectionPoolException {
+    public Connection getConnection() {
         Connection connection;
         try {
             connection = connectionList.poll(15, TimeUnit.SECONDS);
@@ -65,12 +63,12 @@ public class DBConnectionPool {
                 connectionList.add(connection);
             }
         } catch (InterruptedException | SQLException ex) {
-            throw new ConnectionPoolException("Не удалось получить соединение", ex);
+            throw new RuntimeException("Error while creating connection", ex);
         }
         return connection;
     }
 
-    public void freeConnection(Connection connection) throws ConnectionPoolException {
+    public void freeConnection(Connection connection) {
         try {
             if (connection != null) {
                 if (!connectionList.offer(connection, 15, TimeUnit.SECONDS)) {
@@ -78,11 +76,11 @@ public class DBConnectionPool {
                 }
             }
         } catch (InterruptedException | SQLException ex) {
-            throw new ConnectionPoolException("Не удалось вернуть соединение", ex);
+            throw new RuntimeException("Error while return connection", ex);
         }
     }
 
-    public PreparedStatement getPreparedStatement(String sql, Connection connection) throws ConnectionPoolException {
+    public PreparedStatement getPreparedStatement(String sql, Connection connection) {
         if (connection != null) {
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -90,19 +88,9 @@ public class DBConnectionPool {
                     return preparedStatement;
                 }
             } catch (SQLException ex) {
-                throw new ConnectionPoolException("", ex);
+                throw new RuntimeException("Error while getting prepared statement", ex);
             }
         }
-        throw new ConnectionPoolException("");
-    }
-
-    public void closePrepareStatement(PreparedStatement preparedStatement) throws ConnectionPoolException {
-        if (preparedStatement != null) {
-            try {
-                preparedStatement.close();
-            } catch (SQLException ex) {
-                throw new ConnectionPoolException("", ex);
-            }
-        }
+        throw new RuntimeException("Error while getting prepared statement");
     }
 }

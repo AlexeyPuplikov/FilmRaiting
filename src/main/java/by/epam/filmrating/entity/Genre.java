@@ -9,7 +9,7 @@ public class Genre extends Entity {
 
     public Genre(int genreId, String name) {
         super(genreId);
-        this.name = EnumGenre.valueOf(name).getName();
+        this.name = name;
     }
 
     public int getGenreId() {

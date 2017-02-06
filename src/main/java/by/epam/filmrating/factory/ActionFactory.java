@@ -6,17 +6,20 @@ import by.epam.filmrating.command.EmptyCommand;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class ActionFactory {
+public final class ActionFactory {
     private final static String COMMAND_PARAM = "command";
 
-    public ActionCommand defineCommand(HttpServletRequest request) {
-        ActionCommand command = new EmptyCommand();
+    private ActionFactory() {}
+
+    public static ActionCommand defineCommand(HttpServletRequest request) {
+        ActionCommand command;
         String action = request.getParameter(COMMAND_PARAM);
         if(action == null || action.isEmpty()) {
-            return command;
+            command = new EmptyCommand();
+        } else {
+            CommandEnum commandEnum = CommandEnum.valueOf(action.toUpperCase());
+            command = commandEnum.getCurrentCommand();
         }
-        CommandEnum commandEnum = CommandEnum.valueOf(action.toUpperCase());
-        command = commandEnum.getCurrentCommand();
         return command;
     }
 }

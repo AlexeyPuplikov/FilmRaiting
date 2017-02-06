@@ -2,7 +2,6 @@ package by.epam.filmrating.service;
 
 import by.epam.filmrating.dao.CommentDAO;
 import by.epam.filmrating.entity.Comment;
-import by.epam.filmrating.exception.ConnectionPoolException;
 import by.epam.filmrating.exception.DAOException;
 import by.epam.filmrating.exception.ServiceException;
 
@@ -28,29 +27,35 @@ public class CommentService extends AbstractService<Comment> {
     @Override
     public boolean delete(int id) throws ServiceException {
         try {
+            LOG.info("Deleting comment by id: " + id);
             return commentDAO.delete(id);
-        } catch (DAOException | ConnectionPoolException ex) {
-            throw new ServiceException("", ex);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while deleting comment by id. ", ex);
+            throw new ServiceException(ex);
         }
     }
 
     @Override
     public boolean create(Comment entity) throws ServiceException {
         try {
+            LOG.info("Creating comment");
             return commentDAO.create(entity);
-        } catch (DAOException | ConnectionPoolException ex) {
-            throw new ServiceException("", ex);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while creating comment", ex);
+            throw new ServiceException(ex);
         }
     }
 
     @Override
-    public List<Comment> findFilmEntity(int id) throws ServiceException {
-        List<Comment> comments;
+    public List<Comment> findEntitiesByFilm(int id) throws ServiceException {
         try {
-            comments = commentDAO.findFilmEntity(id);
-        } catch (DAOException | ConnectionPoolException ex) {
-            throw new ServiceException("", ex);
+            LOG.info("Retrieving comment by film id: " + id);
+            return commentDAO.findEntitiesByFilm(id);
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving comment by film id", ex);
+            throw new ServiceException(ex);
         }
-        return comments;
     }
 }

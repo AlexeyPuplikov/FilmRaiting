@@ -1,19 +1,27 @@
 package by.epam.filmrating.entity;
 
+import java.util.Date;
+
 public class Comment extends Entity {
     private String text;
     private int filmId;
     private int userId;
+    private Date creationDate;
 
     public Comment() {
         super();
     }
 
-    public Comment(int commentId, String text, int filmId, int userId) {
+    public Comment(int commentId, String text, int filmId, int userId, Date creationDate) {
         super(commentId);
         this.text = text;
         this.filmId = filmId;
         this.userId = userId;
+        this.creationDate = creationDate;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
     }
 
     public int getCommentId() {
@@ -48,12 +56,18 @@ public class Comment extends Entity {
         this.userId = userId;
     }
 
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
+
         Comment comment = (Comment) o;
+
         return filmId == comment.filmId && userId == comment.userId && text.equals(comment.text);
     }
 
