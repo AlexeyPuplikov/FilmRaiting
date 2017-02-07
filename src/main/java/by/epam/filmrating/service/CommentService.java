@@ -20,7 +20,12 @@ public class CommentService extends AbstractService<Comment> {
     }
 
     @Override
-    public Comment findEntityById(int id) throws ServiceException {
+    public Comment findEntityBySign(int id) throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public Comment findEntityBySign(String name) throws ServiceException {
         return null;
     }
 
@@ -53,6 +58,7 @@ public class CommentService extends AbstractService<Comment> {
         try {
             LOG.info("Retrieving comment by film id: " + id);
             return commentDAO.findEntitiesByFilm(id);
+
         } catch (DAOException ex) {
             LOG.error("Error while retrieving comment by film id", ex);
             throw new ServiceException(ex);

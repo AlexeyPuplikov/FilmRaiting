@@ -20,7 +20,8 @@ public class FilmService extends AbstractService<Film> {
         List<Film> films;
         try {
             films = filmDAO.findAll();
-            LOG.info("Retrieving film list: " + films.size());
+            LOG.info("Retrieving film list with size: " + films.size());
+
         } catch (DAOException ex) {
             LOG.error("Error while retrieving film list. ", ex);
             throw new ServiceException(ex);
@@ -29,13 +30,27 @@ public class FilmService extends AbstractService<Film> {
     }
 
     @Override
-    public Film findEntityById(int id) throws ServiceException {
+    public Film findEntityBySign(int id) throws ServiceException {
         Film film;
         try {
-            film = filmDAO.findEntityById(id);
+            film = filmDAO.findEntityBySign(id);
             LOG.info("Retrieving film by id: " + film.getFilmId());
+
         } catch (DAOException ex) {
             LOG.error("Error while retrieving actor by id.");
+            throw new ServiceException(ex);
+        }
+        return film;
+    }
+
+    @Override
+    public Film findEntityBySign(String name) throws ServiceException {
+        Film film;
+        try {
+            film = filmDAO.findEntityBySign(name);
+            LOG.info("Retrieving film by name: " + film.getFilmId());
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving film by name.");
             throw new ServiceException(ex);
         }
         return film;
@@ -46,6 +61,7 @@ public class FilmService extends AbstractService<Film> {
         try {
             LOG.info("Deleting film by id: " + id);
             return filmDAO.delete(id);
+
         } catch (DAOException ex) {
             LOG.error("Error while deleting film by id.");
             throw new ServiceException(ex);
@@ -57,6 +73,7 @@ public class FilmService extends AbstractService<Film> {
         try {
             LOG.info("Creating film.");
             return filmDAO.create(entity);
+
         } catch (DAOException ex) {
             LOG.error("Error while creating film.");
             throw new ServiceException(ex);
@@ -71,7 +88,8 @@ public class FilmService extends AbstractService<Film> {
     public boolean addActorToFilm(Film film, Actor actor) throws ServiceException {
         try {
             LOG.info("Adding actor by id: " + film.getFilmId());
-            return filmDAO.addActorToFilm(film, actor);
+            return filmDAO.addActorsToFilm(film, actor);
+
         } catch (DAOException ex) {
             LOG.error("Error while adding actor to film.");
             throw new ServiceException(ex);
@@ -81,7 +99,8 @@ public class FilmService extends AbstractService<Film> {
     public boolean addGenreToFilm(Film film, Genre genre) throws ServiceException {
         try {
             LOG.info("Adding genre by id: " + film.getFilmId());
-            return filmDAO.addGenreToFilm(film, genre);
+            return filmDAO.addGenresToFilm(film, genre);
+
         } catch (DAOException ex) {
             LOG.error("Error while adding genre to film.");
             throw new ServiceException(ex);
@@ -91,7 +110,8 @@ public class FilmService extends AbstractService<Film> {
     public boolean addCountryToFilm(Film film, Country country) throws ServiceException {
         try {
             LOG.info("Adding country to film: " + film.getFilmId());
-            return filmDAO.addCountryToFilm(film, country);
+            return filmDAO.addCountriesToFilm(film, country);
+
         } catch (DAOException ex) {
             LOG.error("Error while adding country to film.");
             throw new ServiceException(ex);
@@ -102,16 +122,18 @@ public class FilmService extends AbstractService<Film> {
         try {
             LOG.info("Adding cover to film: " + film.getFilmId());
             return filmDAO.addCoverToFilm(inputStream, film);
+
         } catch (DAOException ex) {
             LOG.error("Error while adding country to film.");
             throw new ServiceException(ex);
         }
     }
 
-    public void loadCoverToFilm(Film film, String fileName) throws ServiceException {
+    public void loadCoverToFile(Film film, String fileName) throws ServiceException {
         try {
             LOG.info("Adding cover to film: " + film.getFilmId());
-            filmDAO.loadCoverToFilm(film, fileName);
+            filmDAO.loadCoverToFile(film, fileName);
+
         } catch (DAOException ex) {
             LOG.error("Error while adding country to film.");
             throw new ServiceException(ex);
@@ -122,6 +144,7 @@ public class FilmService extends AbstractService<Film> {
         try {
             LOG.info("Retrieving film by actor id: " + actorId);
             return filmDAO.findFilmByActor(actorId);
+
         } catch (DAOException ex) {
             LOG.error("Error while retrieving film by actor.");
             throw new ServiceException(ex);
@@ -132,6 +155,7 @@ public class FilmService extends AbstractService<Film> {
         try {
             LOG.info("Retrieving film by stage director id: " + stageDirectorId);
             return filmDAO.findFilmByStageDirector(stageDirectorId);
+
         } catch (DAOException ex) {
             LOG.error("Error while retrieving film by stage director.");
             throw new ServiceException(ex);
@@ -142,6 +166,7 @@ public class FilmService extends AbstractService<Film> {
         try {
             LOG.info("Retrieving film by genre id: " + genreId);
             return filmDAO.findFilmByGenre(genreId);
+
         } catch (DAOException ex) {
             LOG.error("Error while retrieving film by genre.");
             throw new ServiceException(ex);
@@ -152,6 +177,7 @@ public class FilmService extends AbstractService<Film> {
         try {
             LOG.info("Retrieving film by country id: " + countryId);
             return filmDAO.findFilmByCountry(countryId);
+
         } catch (DAOException ex) {
             LOG.error("Error while retrieving film by country.");
             throw new ServiceException(ex);
@@ -162,6 +188,7 @@ public class FilmService extends AbstractService<Film> {
         try {
             LOG.info("Retrieving rating by film id: " + filmId);
             return filmDAO.findFilmRating(filmId);
+
         } catch (DAOException ex) {
             LOG.error("Error while retrieving rating by film id.");
             throw new ServiceException(ex);
@@ -172,6 +199,7 @@ public class FilmService extends AbstractService<Film> {
         try {
             LOG.info("Setting rating to film: " + rating.getRatingId());
             return filmDAO.setFilmRating(rating);
+
         } catch (DAOException ex) {
             LOG.error("Error while setting rating to film.");
             throw new ServiceException(ex);
@@ -182,21 +210,10 @@ public class FilmService extends AbstractService<Film> {
         try {
             LOG.info("Retrieving user mark to film: " + userId);
             return filmDAO.findUserMarkToFilm(userId, filmId);
+
         } catch (DAOException ex) {
             LOG.error("Error while retrieving user mark to film.");
             throw new ServiceException(ex);
         }
-    }
-
-    public Film findFilmByName(String name) throws ServiceException {
-        Film film;
-        try {
-            film = filmDAO.findFilmByName(name);
-            LOG.info("Retrieving film by name: " + film.getFilmId());
-        } catch (DAOException ex) {
-            LOG.error("Error while retrieving film by name.");
-            throw new ServiceException(ex);
-        }
-        return film;
     }
 }

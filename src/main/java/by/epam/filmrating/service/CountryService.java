@@ -29,14 +29,28 @@ public class CountryService extends AbstractService<Country> {
     }
 
     @Override
-    public Country findEntityById(int id) throws ServiceException {
+    public Country findEntityBySign(int id) throws ServiceException {
         Country country;
         try {
-            country = countryDAO.findEntityById(id);
+            country = countryDAO.findEntityBySign(id);
             LOG.info("Retrieving country by id: " + id);
 
         } catch (DAOException ex) {
             LOG.error("Error while retrieving country by id. ", ex);
+            throw new ServiceException(ex);
+        }
+        return country;
+    }
+
+    @Override
+    public Country findEntityBySign(String name) throws ServiceException {
+        Country country;
+        try {
+            country = countryDAO.findEntityBySign(name);
+            LOG.info("Retrieving country by name: " + name);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving country by name. ", name);
             throw new ServiceException(ex);
         }
         return country;
@@ -78,19 +92,6 @@ public class CountryService extends AbstractService<Country> {
             throw new ServiceException(ex);
         }
         return countries;
-    }
-
-    public Country findEntityByName(String name) throws ServiceException {
-        Country country;
-        try {
-            country = countryDAO.findEntityByName(name);
-            LOG.info("Retrieving country by name: " + name);
-
-        } catch (DAOException ex) {
-            LOG.error("Error while retrieving country by name. ", name);
-            throw new ServiceException(ex);
-        }
-        return country;
     }
 
     public List<Country> findEntitiesNotInFilm(int id) throws ServiceException {

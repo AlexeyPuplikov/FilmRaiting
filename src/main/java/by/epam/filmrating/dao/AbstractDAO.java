@@ -13,13 +13,10 @@ public abstract class AbstractDAO<T extends Entity> {
     protected DBConnectionPool connectionPool;
 
     public abstract List<T> findAll() throws DAOException;
-
-    public abstract T findEntityById(int id) throws DAOException;
-
+    public abstract T findEntityBySign(int id) throws DAOException;
+    public abstract T findEntityBySign(String name) throws DAOException;
     public abstract boolean delete(int id) throws DAOException;
-
     public abstract boolean create(T entity) throws DAOException;
-
     public abstract List<T> findEntitiesByFilm(int id) throws DAOException;
 
     public void closeConnection(Connection connection) {

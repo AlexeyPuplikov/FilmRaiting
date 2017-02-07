@@ -1,5 +1,6 @@
 package by.epam.filmrating.command;
 
+import by.epam.filmrating.command.ActionCommand;
 import by.epam.filmrating.entity.Actor;
 import by.epam.filmrating.exception.ServiceException;
 import by.epam.filmrating.manager.ConfigurationManager;
@@ -21,33 +22,32 @@ public class AddActorCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        ConfigurationManager configurationManager = new ConfigurationManager();
         String name = request.getParameter("actorName");
-        String dateOfBirth = request.getParameter("actorDOB");
+        String dateOfBirthParam = request.getParameter("actorDateOfBirth");
         String info = request.getParameter("infoActor");
         HttpSession httpSession = request.getSession();
         if(checkName(name)) {
             Actor actor = new Actor();
             actor.setName(name);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date DOBDate = new Date();
+            Date dateOfBirth = null;
             try {
-                DOBDate = format.parse(dateOfBirth);
+                dateOfBirth = format.parse(dateOfBirthParam);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            actor.setDateOfBirth(DOBDate);
+            actor.setDateOfBirth(dateOfBirth);
             actor.setInfo(info);
             try {
                 actorService.create(actor);
             } catch (ServiceException e) {
                 e.printStackTrace();
             }
-            httpSession.removeAttribute("actorAddError");
-            return "redirect:/controller?command=ADD_PARAMETERS_TO_FILM";
+            httpSession.removeAttribute("addError");
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
         } else {
-            httpSession.setAttribute("actorAddError", "Такой aктёр уже добавлен");
-            return "redirect:/controller?command=ADD_PARAMETERS_TO_FILM";
+            httpSession.setAttribute("addError", "Такой элемент уже добавлен");
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
         }
     }
 

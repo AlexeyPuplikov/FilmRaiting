@@ -29,13 +29,25 @@ public class StageDirectorService extends AbstractService<StageDirector> {
     }
 
     @Override
-    public StageDirector findEntityById(int id) throws ServiceException {
+    public StageDirector findEntityBySign(int id) throws ServiceException {
         try {
             LOG.info("Retrieving stage director by id: " + id);
-            return stageDirectorDAO.findEntityById(id);
+            return stageDirectorDAO.findEntityBySign(id);
 
         } catch (DAOException ex) {
             LOG.error("Error while retrieving stage director by id", ex);
+            throw new ServiceException(ex);
+        }
+    }
+
+    @Override
+    public StageDirector findEntityBySign(String name) throws ServiceException {
+        try {
+            LOG.info("Retrieving stage director by name: " + name);
+            return stageDirectorDAO.findEntityBySign(name);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving stage director by name", ex);
             throw new ServiceException(ex);
         }
     }
@@ -82,14 +94,4 @@ public class StageDirectorService extends AbstractService<StageDirector> {
         return stageDirector;
     }
 
-    public StageDirector findEntityByName(String name) throws ServiceException {
-        try {
-            LOG.info("Retrieving stage director by name: " + name);
-            return stageDirectorDAO.findEntityByName(name);
-
-        } catch (DAOException ex) {
-            LOG.error("Error while retrieving stage director by name", ex);
-            throw new ServiceException(ex);
-        }
-    }
 }

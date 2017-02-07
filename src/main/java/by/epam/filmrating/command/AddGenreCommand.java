@@ -6,8 +6,6 @@ import by.epam.filmrating.service.GenreService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class AddGenreCommand implements ActionCommand {
@@ -21,7 +19,7 @@ public class AddGenreCommand implements ActionCommand {
     public String execute(HttpServletRequest request) {
         String name = request.getParameter("genreName");
         HttpSession httpSession = request.getSession();
-        if(checkName(name)) {
+        if (checkName(name)) {
             Genre genre = new Genre();
             genre.setName(name);
             try {
@@ -29,11 +27,11 @@ public class AddGenreCommand implements ActionCommand {
             } catch (ServiceException e) {
                 e.printStackTrace();
             }
-            httpSession.removeAttribute("genreAddError");
-            return "redirect:/controller?command=ADD_PARAMETERS_TO_FILM";
+            httpSession.removeAttribute("addError");
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
         } else {
-            httpSession.setAttribute("actorAddError", "Такой жанр уже добавлен");
-            return "redirect:/controller?command=ADD_PARAMETERS_TO_FILM";
+            httpSession.setAttribute("addError", "Такой элемент уже добавлен");
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
         }
     }
 

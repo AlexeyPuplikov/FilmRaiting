@@ -29,14 +29,28 @@ public class ActorService extends AbstractService<Actor> {
     }
 
     @Override
-    public Actor findEntityById(int id) throws ServiceException {
+    public Actor findEntityBySign(int id) throws ServiceException {
         Actor actor;
         try {
-            actor = actorDAO.findEntityById(id);
+            actor = actorDAO.findEntityBySign(id);
             LOG.info("Retrieving actor by id: " + actor.getActorId());
 
         } catch (DAOException ex) {
             LOG.error("Error while retrieving actor by id.");
+            throw new ServiceException(ex);
+        }
+        return actor;
+    }
+
+    @Override
+    public Actor findEntityBySign(String name) throws ServiceException {
+        Actor actor;
+        try {
+            actor = actorDAO.findEntityBySign(name);
+            LOG.info("Retrieving actor by name: " + actor.getName());
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving actor by name.");
             throw new ServiceException(ex);
         }
         return actor;
@@ -71,36 +85,23 @@ public class ActorService extends AbstractService<Actor> {
         List<Actor> actors;
         try {
             actors = actorDAO.findEntitiesByFilm(id);
-            LOG.info("Retrieving actor by film id: " + id);
+            LOG.info("Retrieving actors by film id: " + id);
 
         } catch (DAOException ex) {
-            LOG.error("Error while retrieving actor by film id.");
+            LOG.error("Error while retrieving actors by film id.");
             throw new ServiceException(ex);
         }
         return actors;
-    }
-
-    public Actor findEntityByName(String name) throws ServiceException {
-        Actor actor;
-        try {
-            actor = actorDAO.findEntityByName(name);
-            LOG.info("Retrieving actor by name: " + actor.getName());
-
-        } catch (DAOException ex) {
-            LOG.error("Error while retrieving actor by name.");
-            throw new ServiceException(ex);
-        }
-        return actor;
     }
 
     public List<Actor> findEntitiesNotInFilm(int id) throws ServiceException {
         List<Actor> actors;
         try {
             actors = actorDAO.findEntitiesNotInFilm(id);
-            LOG.info("Retrieving actor by film id: " + id);
+            LOG.info("Retrieving actors not in film" + id);
 
         } catch (DAOException ex) {
-            LOG.error("Error while retrieving actor by film id.");
+            LOG.error("Error while retrieving actors not in film.");
             throw new ServiceException(ex);
         }
         return actors;

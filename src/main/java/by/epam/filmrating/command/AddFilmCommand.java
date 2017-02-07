@@ -3,7 +3,6 @@ package by.epam.filmrating.command;
 import by.epam.filmrating.entity.Film;
 import by.epam.filmrating.entity.StageDirector;
 import by.epam.filmrating.exception.ServiceException;
-import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.FilmService;
 import by.epam.filmrating.service.StageDirectorService;
 
@@ -13,12 +12,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AddFilmCommand implements ActionCommand {
-    private final static String PATH_MAIN_ADMIN_PAGE = "path.page.admin";
+    private final static String SUCCESSFUL_ADD_FILM_PARAM = "successfulAddFilm";
+    private final static String SUCCESSFUL_ADD_FILM_TEXT = "Фильм успешно добавлен";
 
     private StageDirectorService stageDirectorService;
-
     private FilmService filmService;
-
 
     public AddFilmCommand() {
         this.stageDirectorService = new StageDirectorService();
@@ -27,7 +25,6 @@ public class AddFilmCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        ConfigurationManager configurationManager = new ConfigurationManager();
         String name = request.getParameter("name");
         String year = request.getParameter("year");
         String description = request.getParameter("description");
@@ -40,27 +37,23 @@ public class AddFilmCommand implements ActionCommand {
         film.setYear(Integer.parseInt(year));
         film.setDescription(description);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date premiereDate = new Date();
+        Date premiereDate;
         try {
             premiereDate = format.parse(premiere);
+            film.setPremiere(premiereDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        film.setPremiere(premiereDate);
         film.setTime(Integer.parseInt(time));
         film.setBudget(Integer.parseInt(budget));
-        StageDirector stageDirector = new StageDirector();
+        StageDirector stageDirector;
         try {
-            stageDirector = stageDirectorService.findEntityByName(stageDirectorName);
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
-        film.setStageDirector(stageDirector);
-        try {
+            stageDirector = stageDirectorService.findEntityBySign(stageDirectorName);
+            film.setStageDirector(stageDirector);
             filmService.create(film);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-        return configurationManager.getProperty(PATH_MAIN_ADMIN_PAGE);
+        return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
     }
 }

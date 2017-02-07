@@ -4,7 +4,10 @@ import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.StageDirector;
 import by.epam.filmrating.exception.DAOException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +17,7 @@ public class StageDirectorDAO extends AbstractDAO<StageDirector> {
     private final static String SELECT_STAGE_DIRECTOR_BY_NAME = "SELECT STAGE_DIRECTOR_ID, NAME, DATE_OF_BIRTH, INFO FROM STAGE_DIRECTOR WHERE NAME = ?";
     private final static String DELETE_STAGE_DIRECTOR = "DELETE FROM STAGE_DIRECTOR WHERE STAGE_DIRECTOR_ID = ?";
     private final static String INSERT_STAGE_DIRECTOR = "INSERT INTO STAGE_DIRECTOR(STAGE_DIRECTOR_ID, NAME, DATE_OF_BIRTH, INFO) VALUES(?,?,?,?)";
-    private final static String SELECT_FILM_STAGE_DIRECTOR = "SELECT SD.STAGE_DIRECTOR_ID, SD.NAME, DATE_OF_BIRTH, INFO FROM STAGE_DIRECTOR SD JOIN FILM F ON SD.STAGE_DIRECTOR_ID = F.STAGE_DIRECTOR_ID WHERE F.FILM_ID = ?";
+    private final static String SELECT_STAGE_DIRECTOR_BY_FILM = "SELECT SD.STAGE_DIRECTOR_ID, SD.NAME, DATE_OF_BIRTH, INFO FROM STAGE_DIRECTOR SD JOIN FILM F ON SD.STAGE_DIRECTOR_ID = F.STAGE_DIRECTOR_ID WHERE F.FILM_ID = ?";
 
     private final static String STAGE_DIRECTOR_ID = "STAGE_DIRECTOR_ID";
     private final static String NAME = "NAME";
@@ -36,7 +39,7 @@ public class StageDirectorDAO extends AbstractDAO<StageDirector> {
                 stageDirectors.add(stageDirector);
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findAll method", ex);
+            throw new DAOException("Error while executing findAll stageDirectors method", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -44,17 +47,37 @@ public class StageDirectorDAO extends AbstractDAO<StageDirector> {
     }
 
     @Override
-    public StageDirector findEntityById(int id) throws DAOException {
+    public StageDirector findEntityBySign(int id) throws DAOException {
         Connection connection = connectionPool.getConnection();
         StageDirector stageDirector = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_STAGE_DIRECTOR_BY_ID, connection)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            stageDirector = new StageDirector(resultSet.getInt(STAGE_DIRECTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
+            if (resultSet.next()) {
+                stageDirector = new StageDirector(resultSet.getInt(STAGE_DIRECTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
+            }
             resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findEntityById method", ex);
+            throw new DAOException("Error while executing findEntityBySign method", ex);
+        } finally {
+            this.closeConnection(connection);
+        }
+        return stageDirector;
+    }
+
+    @Override
+    public StageDirector findEntityBySign(String name) throws DAOException {
+        Connection connection = connectionPool.getConnection();
+        StageDirector stageDirector = null;
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_STAGE_DIRECTOR_BY_NAME, connection)) {
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                stageDirector = new StageDirector(resultSet.getInt(STAGE_DIRECTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
+            }
+            resultSet.close();
+        } catch (SQLException ex) {
+            throw new DAOException("Error while executing findEntityBySign method", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -86,34 +109,17 @@ public class StageDirectorDAO extends AbstractDAO<StageDirector> {
     }
 
     public StageDirector findEntityByFilm(int filmId) throws DAOException {
-        StageDirector stageDirector;
-        Connection connection = connectionPool.getConnection();
-        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_STAGE_DIRECTOR, connection)) {
-            preparedStatement.setInt(1, filmId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            stageDirector = new StageDirector(resultSet.getInt(STAGE_DIRECTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
-            resultSet.close();
-        } catch (SQLException ex) {
-            throw new DAOException("Error while executing findEntityByFilm method", ex);
-        } finally {
-            this.closeConnection(connection);
-        }
-        return stageDirector;
-    }
-
-    public StageDirector findEntityByName(String name) throws DAOException {
-        Connection connection = connectionPool.getConnection();
         StageDirector stageDirector = null;
-        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_STAGE_DIRECTOR_BY_NAME, connection)) {
-            preparedStatement.setString(1, name);
+        Connection connection = connectionPool.getConnection();
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_STAGE_DIRECTOR_BY_FILM, connection)) {
+            preparedStatement.setInt(1, filmId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 stageDirector = new StageDirector(resultSet.getInt(STAGE_DIRECTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
             }
             resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findEntityByName method", ex);
+            throw new DAOException("Error while executing findStageDirectorByFilm method", ex);
         } finally {
             this.closeConnection(connection);
         }

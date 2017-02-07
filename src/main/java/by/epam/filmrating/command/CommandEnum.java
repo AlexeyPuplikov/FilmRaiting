@@ -8,12 +8,17 @@ public enum CommandEnum {
     },
     VIEW_FILM {
         {
-            this.command = new FilmCommand();
+            this.command = new ViewFilmCommand();
         }
     },
     ADD_COMMENT {
         {
             this.command = new AddCommentCommand();
+        }
+    },
+    OPEN_LOGIN_PAGE {
+        {
+            this.command = new OpenLoginPageCommand();
         }
     },
     LOGIN {
@@ -33,7 +38,7 @@ public enum CommandEnum {
     },
     CHANGE_LANGUAGE {
         {
-            this.command = new ChangeLanguage();
+            this.command = new ChangeLanguageCommand();
         }
     },
     FIND_FILM {
@@ -71,26 +76,37 @@ public enum CommandEnum {
             this.command = new AddCountryCommand();
         }
     },
-    ADD_PARAMETERS_TO_FILM {
+    OPEN_ADD_FILM_PAGE {
         {
-            this.command = new AddParametersToFilmCommand();
+            this.command = new OpenAddFilmPageCommand();
         }
     },
-    ADD_CREATE_PARAMETERS_TO_FILM {
+    SELECT_CREATE_PARAMETERS_TO_FILM {
         {
-            this.command = new AddCreateParametersToFilmCommand();
+            this.command = new SelectCreateParametersToFilmCommand();
         }
     },
-    ADD_CORRECT_PARAMETERS_TO_FILM {
+    ADDITIONAL_PARAMETERS_TO_FILM {
         {
-            this.command = new AddCorrectParametersToFilm();
+            this.command = new AdditionalParametersToFilmCommand();
         }
     },
     UPLOAD_FILE {
         {
             this.command = new UploadFileCommand();
         }
-    };
+    },
+    DELETE_FILM {
+        {
+            this.command = new DeleteFilmCommand();
+        }
+    },
+    OPEN_MAIN_ADMIN_PAGE {
+        {
+            this.command = new OpenMainAdminPageCommand();
+        }
+    }
+    ;
 
     ActionCommand command;
     public ActionCommand getCurrentCommand() {

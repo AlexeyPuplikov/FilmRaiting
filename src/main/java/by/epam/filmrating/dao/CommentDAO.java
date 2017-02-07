@@ -13,7 +13,7 @@ import java.util.TimeZone;
 public class CommentDAO extends AbstractDAO<Comment> {
     private final static String DELETE_COMMENT = "DELETE FROM COMMENT WHERE COMMENT_ID = ?";
     private final static String INSERT_COMMENT = "INSERT INTO COMMENT(COMMENT_ID, TEXT, FILM_ID, USER_ID, CREATION_DATE) VALUES(?,?,?,?,?)";
-    private final static String SELECT_FILM_COMMENT = "SELECT COMMENT_ID, TEXT, FILM_ID, USER_ID, CREATION_DATE FROM COMMENT WHERE FILM_ID = ? ORDER BY CREATION_DATE DESC";
+    private final static String SELECT_COMMENTS_BY_FILM = "SELECT COMMENT_ID, TEXT, FILM_ID, USER_ID, CREATION_DATE FROM COMMENT WHERE FILM_ID = ? ORDER BY CREATION_DATE DESC";
 
     private final static String COMMENT_ID = "COMMENT_ID";
     private final static String TEXT = "TEXT";
@@ -43,7 +43,7 @@ public class CommentDAO extends AbstractDAO<Comment> {
                     Calendar.getInstance(TimeZone.getTimeZone(TIME_FORMAT)));
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing create method", ex);
+            throw new DAOException("Error while executing create comment method.", ex);
         }
     }
 
@@ -51,7 +51,7 @@ public class CommentDAO extends AbstractDAO<Comment> {
     public List<Comment> findEntitiesByFilm(int filmId) throws DAOException {
         List<Comment> comments = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
-        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_COMMENT, connection)) {
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_COMMENTS_BY_FILM, connection)) {
             preparedStatement.setInt(1, filmId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -60,7 +60,7 @@ public class CommentDAO extends AbstractDAO<Comment> {
             }
             resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findEntitiesByFilm method", ex);
+            throw new DAOException("Error while executing findCommentsByFilm method", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -73,7 +73,12 @@ public class CommentDAO extends AbstractDAO<Comment> {
     }
 
     @Override
-    public Comment findEntityById(int id) throws DAOException {
+    public Comment findEntityBySign(int id) throws DAOException {
+        return null;
+    }
+
+    @Override
+    public Comment findEntityBySign(String name) throws DAOException {
         return null;
     }
 }

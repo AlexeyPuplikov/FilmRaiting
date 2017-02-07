@@ -29,14 +29,28 @@ public class GenreService extends AbstractService<Genre> {
     }
 
     @Override
-    public Genre findEntityById(int id) throws ServiceException {
+    public Genre findEntityBySign(int id) throws ServiceException {
         Genre genre;
         try {
-            genre = genreDAO.findEntityById(id);
+            genre = genreDAO.findEntityBySign(id);
             LOG.info("Retrieving genre by id: " + id);
 
         } catch (DAOException ex) {
             LOG.error("Error while retrieving genre by id. ", ex);
+            throw new ServiceException(ex);
+        }
+        return genre;
+    }
+
+    @Override
+    public Genre findEntityBySign(String name) throws ServiceException {
+        Genre genre;
+        try {
+            genre = genreDAO.findEntityBySign(name);
+            LOG.info("Retrieving genre by name: " + name);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving genre by name. ", ex);
             throw new ServiceException(ex);
         }
         return genre;
@@ -59,6 +73,7 @@ public class GenreService extends AbstractService<Genre> {
         try {
             LOG.info("creating genre");
             return genreDAO.create(entity);
+
         } catch (DAOException ex) {
             LOG.error("Error while creating genre. ", ex);
             throw new ServiceException("", ex);
@@ -77,19 +92,6 @@ public class GenreService extends AbstractService<Genre> {
             throw new ServiceException(ex);
         }
         return genres;
-    }
-
-    public Genre findEntityByName(String name) throws ServiceException {
-        Genre genre;
-        try {
-            genre = genreDAO.findEntityByName(name);
-            LOG.info("Retrieving genre by name: " + name);
-
-        } catch (DAOException ex) {
-            LOG.error("Error while retrieving genre by name. ", ex);
-            throw new ServiceException(ex);
-        }
-        return genre;
     }
 
     public List<Genre> findEntitiesNotInFilm(int id) throws ServiceException {

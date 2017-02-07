@@ -2,7 +2,6 @@ package by.epam.filmrating.command;
 
 import by.epam.filmrating.entity.StageDirector;
 import by.epam.filmrating.exception.ServiceException;
-import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.StageDirectorService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,33 +21,32 @@ public class AddStageDirectorCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        ConfigurationManager configurationManager = new ConfigurationManager();
         String name = request.getParameter("stageDirectorName");
-        String dateOfBirth = request.getParameter("stageDirectorDOB");
+        String dateOfBirthParam = request.getParameter("stageDirectorDateOfBirth");
         String info = request.getParameter("infoStageDirector");
         HttpSession httpSession = request.getSession();
-        if(checkName(name)) {
+        if (checkName(name)) {
             StageDirector stageDirector = new StageDirector();
             stageDirector.setName(name);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date DOBDate = new Date();
+            Date dateOfBirth = null;
             try {
-                DOBDate = format.parse(dateOfBirth);
+                dateOfBirth = format.parse(dateOfBirthParam);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            stageDirector.setDateOfBirth(DOBDate);
+            stageDirector.setDateOfBirth(dateOfBirth);
             stageDirector.setInfo(info);
             try {
                 stageDirectorService.create(stageDirector);
             } catch (ServiceException e) {
                 e.printStackTrace();
             }
-            httpSession.removeAttribute("stageDirectorAddError");
-            return "redirect:/controller?command=ADD_PARAMETERS_TO_FILM";
+            httpSession.removeAttribute("addError");
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
         } else {
-            httpSession.setAttribute("stageDirectorAddError", "Такой режиссер уже добавлен");
-            return "redirect:/controller?command=ADD_PARAMETERS_TO_FILM";
+            httpSession.setAttribute("addError", "Такой элемент уже добавлен");
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
         }
     }
 

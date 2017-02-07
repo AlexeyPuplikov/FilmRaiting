@@ -13,10 +13,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class ViewFilmsCommand implements ActionCommand {
-    private final static String PATH_FILMS_PAGE = "path.page.films";
+    private final static String PATH_MAIN_USER_PAGE = "path.page.mainUser";
     private final static String FILMS_PARAM = "films";
-    private static final String PARAM_LOCALE = "locale";
-    private static final String PARAM_LANGUAGE = "language";
+    private final static String PARAM_LOCALE = "locale";
+    private final static String PARAM_LANGUAGE = "language";
+    private final static String IMAGE_DIRECTORY = "C:\\Users\\user\\Desktop\\FinalProject\\FilmRaiting\\src\\main\\webapp\\WEB_INF\\resources\\images\\";
 
     private FilmService filmService;
 
@@ -26,15 +27,14 @@ public class ViewFilmsCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String path = "C:\\Users\\user\\Desktop\\FinalProject\\FilmRaiting\\src\\main\\webapp\\resources\\images\\";
-        String realPath;
+        String nameImage;
         List<Film> films = new ArrayList<>();
         try {
             films = filmService.findAll();
             for (Film film : films) {
-                realPath = path + film.getName() + ".jpg";
-                if (!new File(realPath).exists()) {
-                    filmService.loadCoverToFilm(film, realPath);
+                nameImage = IMAGE_DIRECTORY + film.getName() + ".jpg";
+                if (!new File(nameImage).exists() && film.getCover() != null) {
+                    filmService.loadCoverToFile(film, nameImage);
                 }
             }
         } catch (ServiceException e) {
@@ -48,8 +48,7 @@ public class ViewFilmsCommand implements ActionCommand {
         String currLocale = (String) session.getAttribute(PARAM_LANGUAGE);
         request.setAttribute(PARAM_LOCALE, currLocale);
 
-
         ConfigurationManager configurationManager = new ConfigurationManager();
-        return configurationManager.getProperty(PATH_FILMS_PAGE);
+        return configurationManager.getProperty(PATH_MAIN_USER_PAGE);
     }
 }

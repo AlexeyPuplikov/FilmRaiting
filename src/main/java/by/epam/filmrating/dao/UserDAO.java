@@ -41,7 +41,7 @@ public class UserDAO extends AbstractDAO<User> {
                 users.add(user);
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findAll method", ex);
+            throw new DAOException("Error while executing findAll user method", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -49,7 +49,7 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     @Override
-    public User findEntityById(int id) throws DAOException {
+    public User findEntityBySign(int id) throws DAOException {
         Connection connection = connectionPool.getConnection();
         User user = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_USER_BY_ID, connection)) {
@@ -59,11 +59,16 @@ public class UserDAO extends AbstractDAO<User> {
             user = new User(resultSet.getInt(USER_ID), resultSet.getString(LOGIN), resultSet.getString(PASSWORD), resultSet.getString(STATUS), EnumRole.valueOf(resultSet.getString(ROLE)).name());
             resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findEntityById method", ex);
+            throw new DAOException("Error while executing findUserBySign method", ex);
         } finally {
             this.closeConnection(connection);
         }
         return user;
+    }
+
+    @Override
+    public User findEntityBySign(String name) throws DAOException {
+        return null;
     }
 
     @Override
@@ -76,7 +81,7 @@ public class UserDAO extends AbstractDAO<User> {
             preparedStatement.setInt(4, EnumRole.valueOf(String.valueOf(user.getRole())).ordinal() + 1);
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing create method", ex);
+            throw new DAOException("Error while executing create user method", ex);
         }
     }
 
@@ -90,10 +95,10 @@ public class UserDAO extends AbstractDAO<User> {
         return null;
     }
 
-    public boolean updateStatus(int userId, String status) throws DAOException {
+    public boolean updateStatus(int userId, int statusId) throws DAOException {
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(UPDATE_STATUS, connection)) {
-            preparedStatement.setInt(1, EnumStatus.valueOf(status).ordinal() + 1);
+            preparedStatement.setInt(1, statusId);
             preparedStatement.setInt(2, userId);
             return preparedStatement.execute();
         } catch (SQLException ex) {

@@ -3,7 +3,7 @@ package by.epam.filmrating.command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-public class ChangeLanguage implements ActionCommand {
+public class ChangeLanguageCommand implements ActionCommand {
     private static final String PARAM_LANGUAGE = "language";
     private static final String PARAM_LOCALE = "locale";
 

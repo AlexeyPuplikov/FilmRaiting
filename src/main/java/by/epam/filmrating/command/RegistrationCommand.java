@@ -1,5 +1,6 @@
 package by.epam.filmrating.command;
 
+import by.epam.filmrating.entity.EnumStatus;
 import by.epam.filmrating.entity.User;
 import by.epam.filmrating.exception.ServiceException;
 import by.epam.filmrating.manager.ConfigurationManager;
@@ -41,7 +42,7 @@ public class RegistrationCommand implements ActionCommand {
             }
             HttpSession httpSession = request.getSession();
             httpSession.setAttribute("user", user);
-
+            httpSession.setAttribute("status", EnumStatus.valueOf(user.getStatus()).getName());
             return configurationManager.getProperty(PATH_INDEX_PAGE);
         } else {
             request.setAttribute(PARAM_ERROR_REGISTRATION, ERROR);
@@ -55,7 +56,7 @@ public class RegistrationCommand implements ActionCommand {
         try {
             users = this.userService.findAll();
             for (User user : users) {
-                if (user.getLogin().equals(login)) {
+                if (user.getLogin().equalsIgnoreCase(login)) {
                     check = false;
                 }
             }

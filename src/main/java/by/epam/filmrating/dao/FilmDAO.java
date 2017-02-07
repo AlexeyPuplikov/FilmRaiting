@@ -1,23 +1,33 @@
 package by.epam.filmrating.dao;
 
 import by.epam.filmrating.connection.DBConnectionPool;
-import by.epam.filmrating.entity.*;
+import by.epam.filmrating.entity.Actor;
+import by.epam.filmrating.entity.Country;
+import by.epam.filmrating.entity.Film;
+import by.epam.filmrating.entity.Genre;
+import by.epam.filmrating.entity.Rating;
 import by.epam.filmrating.exception.DAOException;
 
-import java.io.*;
-import java.sql.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FilmDAO extends AbstractDAO<Film> {
-    private final static String SELECT_FILM = "SELECT FILM_ID, STAGE_DIRECTOR_ID, NAME, YEAR, DESCRIPTION, PREMIERE, TIME, BUDGET, COVER FROM FILM";
+    private final static String SELECT_FILMS = "SELECT FILM_ID, STAGE_DIRECTOR_ID, NAME, YEAR, DESCRIPTION, PREMIERE, TIME, BUDGET, COVER FROM FILM";
     private final static String SELECT_FILM_BY_ID = "SELECT FILM_ID, STAGE_DIRECTOR_ID, NAME, YEAR, DESCRIPTION, PREMIERE, TIME, BUDGET, COVER FROM FILM WHERE FILM_ID = ?";
     private final static String SELECT_FILM_BY_NAME = "SELECT FILM_ID, STAGE_DIRECTOR_ID, NAME, YEAR, DESCRIPTION, PREMIERE, TIME, BUDGET, COVER FROM FILM WHERE NAME = ?";
     private final static String DELETE_FILM = "DELETE FROM FILM WHERE FILM_ID = ?";
     private final static String INSERT_FILM = "INSERT INTO FILM(FILM_ID, STAGE_DIRECTOR_ID, NAME, YEAR, DESCRIPTION, PREMIERE, TIME, BUDGET) VALUES(?,?,?,?,?,?,?,?)";
-    private final static String ADD_ACTOR_TO_FILM = "INSERT INTO FILM_HAS_ACTOR(FILM_ID, ACTOR_ID) VALUES (?,?)";
-    private final static String ADD_GENRE_TO_FILM = "INSERT INTO FILM_HAS_GENRE(FILM_ID, GENRE_ID) VALUES (?,?)";
-    private final static String ADD_COUNTRY_TO_FILM = "INSERT INTO FILM_HAS_COUNTRY(FILM_ID, COUNTRY_ID) VALUES (?,?)";
+    private final static String ADD_ACTORS_TO_FILM = "INSERT INTO FILM_HAS_ACTOR(FILM_ID, ACTOR_ID) VALUES (?,?)";
+    private final static String ADD_GENRES_TO_FILM = "INSERT INTO FILM_HAS_GENRE(FILM_ID, GENRE_ID) VALUES (?,?)";
+    private final static String ADD_COUNTRIES_TO_FILM = "INSERT INTO FILM_HAS_COUNTRY(FILM_ID, COUNTRY_ID) VALUES (?,?)";
     private final static String ADD_COVER_TO_FILM = "UPDATE FILM SET COVER = ? WHERE FILM_ID = ?";
     private final static String SELECT_FILM_BY_ACTOR = "SELECT F.FILM_ID, F.NAME, YEAR, DESCRIPTION, PREMIERE, TIME, BUDGET FROM FILM F "
             + "JOIN FILM_HAS_ACTOR FHA ON FHA.FILM_ID = F.FILM_ID AND ACTOR_ID = ?";
@@ -54,13 +64,13 @@ public class FilmDAO extends AbstractDAO<Film> {
     public List<Film> findAll() throws DAOException {
         List<Film> films = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
-        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM, connection);
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILMS, connection);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
                 films.add(setFilmFields(resultSet));
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findAll method", ex);
+            throw new DAOException("Error while executing findAll films method", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -68,7 +78,7 @@ public class FilmDAO extends AbstractDAO<Film> {
     }
 
     @Override
-    public Film findEntityById(int id) throws DAOException {
+    public Film findEntityBySign(int id) throws DAOException {
         Connection connection = connectionPool.getConnection();
         Film film = new Film();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_BY_ID, connection)) {
@@ -79,7 +89,26 @@ public class FilmDAO extends AbstractDAO<Film> {
             }
             resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findEntityById method", ex);
+            throw new DAOException("Error while executing findFilmBySign method", ex);
+        } finally {
+            this.closeConnection(connection);
+        }
+        return film;
+    }
+
+    @Override
+    public Film findEntityBySign(String name) throws DAOException {
+        Connection connection = connectionPool.getConnection();
+        Film film = new Film();
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_BY_NAME, connection)) {
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                film = setFilmFields(resultSet);
+            }
+            resultSet.close();
+        } catch (SQLException ex) {
+            throw new DAOException("Error while executing findFilmByName method", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -105,7 +134,7 @@ public class FilmDAO extends AbstractDAO<Film> {
             preparedStatement.setInt(8, film.getBudget());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing create method", ex);
+            throw new DAOException("Error while executing create film method", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -116,36 +145,36 @@ public class FilmDAO extends AbstractDAO<Film> {
         return null;
     }
 
-    public boolean addActorToFilm(Film film, Actor actor) throws DAOException {
+    public boolean addActorsToFilm(Film film, Actor actor) throws DAOException {
         Connection connection = connectionPool.getConnection();
-        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(ADD_ACTOR_TO_FILM, connection)) {
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(ADD_ACTORS_TO_FILM, connection)) {
             preparedStatement.setInt(1, film.getFilmId());
             preparedStatement.setInt(2, actor.getActorId());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing addStageDirectorToFilm method", ex);
+            throw new DAOException("Error while executing addActorsToFilm method", ex);
         }
     }
 
-    public boolean addGenreToFilm(Film film, Genre genre) throws DAOException {
+    public boolean addGenresToFilm(Film film, Genre genre) throws DAOException {
         Connection connection = connectionPool.getConnection();
-        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(ADD_GENRE_TO_FILM, connection)) {
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(ADD_GENRES_TO_FILM, connection)) {
             preparedStatement.setInt(1, film.getFilmId());
             preparedStatement.setInt(2, genre.getGenreId());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing addGenreToFilm method", ex);
+            throw new DAOException("Error while executing addGenresToFilm method", ex);
         }
     }
 
-    public boolean addCountryToFilm(Film film, Country country) throws DAOException {
+    public boolean addCountriesToFilm(Film film, Country country) throws DAOException {
         Connection connection = connectionPool.getConnection();
-        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(ADD_COUNTRY_TO_FILM, connection)) {
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(ADD_COUNTRIES_TO_FILM, connection)) {
             preparedStatement.setInt(1, film.getFilmId());
             preparedStatement.setInt(2, country.getCountryId());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing addCountryToFilm method", ex);
+            throw new DAOException("Error while executing addCountriesToFilm method", ex);
         }
     }
 
@@ -160,53 +189,53 @@ public class FilmDAO extends AbstractDAO<Film> {
         }
     }
 
-    public void loadCoverToFilm(Film film, String fileName) throws DAOException {
+    public void loadCoverToFile(Film film, String fileName) throws DAOException {
         Connection connection = connectionPool.getConnection();
-        ResultSet resultSet = null;
-        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_COVER, connection)) {
+        ResultSet resultSet;
+        File file = new File(fileName);
+        InputStream input = null;
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_COVER, connection);
+             FileOutputStream output = new FileOutputStream(file)) {
             preparedStatement.setInt(1, film.getFilmId());
             resultSet = preparedStatement.executeQuery();
-            File file = new File(fileName);
-            FileOutputStream output = new FileOutputStream(file);
             while (resultSet.next()) {
-                InputStream input = resultSet.getBinaryStream(COVER);
+                input = resultSet.getBinaryStream(COVER);
                 byte[] buffer = new byte[1024];
                 while (input.read(buffer) > 0) {
                     output.write(buffer);
                 }
             }
-        } catch (SQLException | FileNotFoundException ex) {
+            resultSet.close();
+        } catch (SQLException | IOException ex) {
             throw new DAOException("Error while executing addCoverToFilm method", ex);
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             try {
-                if (resultSet != null) {
-                    resultSet.close();
+                if (input != null) {
+                    input.close();
                 }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
     }
 
     public List<Film> findFilmByActor(int actorId) throws DAOException {
-        return this.findHelper(actorId, SELECT_FILM_BY_ACTOR);
+        return this.findHandler(actorId, SELECT_FILM_BY_ACTOR);
     }
 
     public List<Film> findFilmByStageDirector(int stageDirectorId) throws DAOException {
-        return this.findHelper(stageDirectorId, SELECT_FILM_BY_STAGE_DIRECTOR);
+        return this.findHandler(stageDirectorId, SELECT_FILM_BY_STAGE_DIRECTOR);
     }
 
     public List<Film> findFilmByGenre(int genreId) throws DAOException {
-        return this.findHelper(genreId, SELECT_FILM_BY_GENRE);
+        return this.findHandler(genreId, SELECT_FILM_BY_GENRE);
     }
 
     public List<Film> findFilmByCountry(int countryId) throws DAOException {
-        return this.findHelper(countryId, SELECT_FILM_BY_COUNTRY);
+        return this.findHandler(countryId, SELECT_FILM_BY_COUNTRY);
     }
 
-    private List<Film> findHelper(int entityId, String sql) throws DAOException {
+    private List<Film> findHandler(int entityId, String sql) throws DAOException {
         List<Film> films = new ArrayList<>();
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(sql, connection)) {
@@ -217,7 +246,7 @@ public class FilmDAO extends AbstractDAO<Film> {
             }
             resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findHelper method", ex);
+            throw new DAOException("Error while executing findHandler method", ex);
         }
         return films;
     }
@@ -250,13 +279,14 @@ public class FilmDAO extends AbstractDAO<Film> {
     }
 
     public double findFilmRating(int filmId) throws DAOException {
-        double rating;
+        double rating = 0;
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_RATING, connection)) {
             preparedStatement.setInt(1, filmId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            rating = resultSet.getDouble(RATING);
+            if (resultSet.next()) {
+                rating = resultSet.getDouble(RATING);
+            }
             resultSet.close();
         } catch (SQLException ex) {
             throw new DAOException("Error while executing findFilmRating method", ex);
@@ -290,27 +320,10 @@ public class FilmDAO extends AbstractDAO<Film> {
                 rating.setMark(resultSet.getInt(MARK));
                 return rating;
             }
+            resultSet.close();
         } catch (SQLException ex) {
             throw new DAOException("Error while executing findUserMarkToFilm method", ex);
         }
         return null;
-    }
-
-    public Film findFilmByName(String name) throws DAOException {
-        Connection connection = connectionPool.getConnection();
-        Film film = new Film();
-        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_BY_NAME, connection)) {
-            preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                film = setFilmFields(resultSet);
-            }
-            resultSet.close();
-        } catch (SQLException ex) {
-            throw new DAOException("Error while executing findFilmByName method", ex);
-        } finally {
-            this.closeConnection(connection);
-        }
-        return film;
     }
 }

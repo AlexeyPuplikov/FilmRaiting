@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddCorrectParametersToFilm implements ActionCommand {
+public class AdditionalParametersToFilmCommand implements ActionCommand {
     private final static String PATH_ADD_FILM_PAGE = "path.page.addFilm";
 
     private FilmService filmService;
@@ -18,7 +18,7 @@ public class AddCorrectParametersToFilm implements ActionCommand {
     private CountryService countryService;
     private StageDirectorService stageDirectorService;
 
-    public AddCorrectParametersToFilm() {
+    public AdditionalParametersToFilmCommand() {
         this.filmService = new FilmService();
         this.actorService = new ActorService();
         this.genreService = new GenreService();
@@ -29,22 +29,22 @@ public class AddCorrectParametersToFilm implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request) {
         String film = request.getParameter("film");
-        List<Actor> actors = new ArrayList<>();
-        List<Genre> genres = new ArrayList<>();
-        List<Country> countries = new ArrayList<>();
-        List<StageDirector> stageDirectors = new ArrayList<>();
+        List<Actor> actors = null;
+        List<Genre> genres = null;
+        List<Country> countries = null;
+        List<StageDirector> stageDirectors = null;
         List<Film> films = new ArrayList<>();
         try {
             films = filmService.findAll();
             stageDirectors = stageDirectorService.findAll();
-            actors = actorService.findEntitiesNotInFilm(filmService.findFilmByName(film).getFilmId());
-            genres = genreService.findEntitiesNotInFilm(filmService.findFilmByName(film).getFilmId());
-            countries = countryService.findEntitiesNotInFilm(filmService.findFilmByName(film).getFilmId());
+            actors = actorService.findEntitiesNotInFilm(filmService.findEntityBySign(film).getFilmId());
+            genres = genreService.findEntitiesNotInFilm(filmService.findEntityBySign(film).getFilmId());
+            countries = countryService.findEntitiesNotInFilm(filmService.findEntityBySign(film).getFilmId());
         } catch (ServiceException e) {
             e.printStackTrace();
         }
         try {
-            request.setAttribute("currentFilm", filmService.findFilmByName(film));
+            request.setAttribute("currentFilm", filmService.findEntityBySign(film));
         } catch (ServiceException e) {
             e.printStackTrace();
         }

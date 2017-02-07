@@ -18,7 +18,7 @@ public class User extends Entity {
         super(userId);
         this.login = login;
         this.password = password;
-        this.status = EnumStatus.valueOf(status).getName();
+        this.status = String.valueOf(EnumStatus.valueOf(status));
         this.role = EnumRole.valueOf(role);
     }
 

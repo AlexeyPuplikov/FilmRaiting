@@ -29,10 +29,10 @@ public class UserService extends AbstractService<User> {
     }
 
     @Override
-    public User findEntityById(int id) throws ServiceException {
+    public User findEntityBySign(int id) throws ServiceException {
         User user;
         try {
-            user = userDAO.findEntityById(id);
+            user = userDAO.findEntityBySign(id);
             LOG.info("Retrieving user by id: " + id);
 
         } catch (DAOException ex) {
@@ -40,6 +40,11 @@ public class UserService extends AbstractService<User> {
             throw new ServiceException(ex);
         }
         return user;
+    }
+
+    @Override
+    public User findEntityBySign(String name) throws ServiceException {
+        return null;
     }
 
     @Override
@@ -64,10 +69,10 @@ public class UserService extends AbstractService<User> {
         return null;
     }
 
-    public boolean updateStatus(int userId, String status) throws ServiceException {
+    public boolean updateStatus(int userId, int statusId) throws ServiceException {
         try {
             LOG.info("Update user status.");
-            return userDAO.updateStatus(userId, status);
+            return userDAO.updateStatus(userId, statusId);
 
         } catch (DAOException ex) {
             LOG.error("Error while update user status.", ex);

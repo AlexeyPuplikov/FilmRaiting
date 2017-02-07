@@ -1,5 +1,6 @@
 package by.epam.filmrating.command;
 
+import by.epam.filmrating.command.ActionCommand;
 import by.epam.filmrating.entity.Actor;
 import by.epam.filmrating.entity.Country;
 import by.epam.filmrating.entity.Genre;
@@ -14,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddCreateParametersToFilmCommand implements ActionCommand {
+public class SelectCreateParametersToFilmCommand implements ActionCommand {
     private final static String PATH_MAIN_ADMIN_PAGE = "path.page.admin";
 
     private FilmService filmService;
@@ -22,7 +23,7 @@ public class AddCreateParametersToFilmCommand implements ActionCommand {
     private GenreService genreService;
     private CountryService countryService;
 
-    public AddCreateParametersToFilmCommand() {
+    public SelectCreateParametersToFilmCommand() {
         this.filmService = new FilmService();
         this.actorService = new ActorService();
         this.genreService = new GenreService();
@@ -42,20 +43,20 @@ public class AddCreateParametersToFilmCommand implements ActionCommand {
         try {
             if (actorNames != null) {
                 for (int i = 0; i < actorNames.length; i++) {
-                    actors.add(actorService.findEntityByName(actorNames[i]));
-                    filmService.addActorToFilm(filmService.findFilmByName(film), actors.get(i));
+                    actors.add(actorService.findEntityBySign(actorNames[i]));
+                    filmService.addActorToFilm(filmService.findEntityBySign(film), actors.get(i));
                 }
             }
             if (genreNames != null) {
                 for (int i = 0; i < genreNames.length; i++) {
-                    genres.add(genreService.findEntityByName(genreNames[i]));
-                    filmService.addGenreToFilm(filmService.findFilmByName(film), genres.get(i));
+                    genres.add(genreService.findEntityBySign(genreNames[i]));
+                    filmService.addGenreToFilm(filmService.findEntityBySign(film), genres.get(i));
                 }
             }
             if (countryNames != null) {
                 for (int i = 0; i < countryNames.length; i++) {
-                    countries.add(countryService.findEntityByName(countryNames[i]));
-                    filmService.addCountryToFilm(filmService.findFilmByName(film), countries.get(i));
+                    countries.add(countryService.findEntityBySign(countryNames[i]));
+                    filmService.addCountryToFilm(filmService.findEntityBySign(film), countries.get(i));
                 }
             }
         } catch (ServiceException e) {

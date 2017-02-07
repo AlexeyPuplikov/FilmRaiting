@@ -17,9 +17,9 @@ public class AddCountryCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String name = request.getParameter("genreName");
+        String name = request.getParameter("countryName");
         HttpSession httpSession = request.getSession();
-        if(checkName(name)) {
+        if (checkName(name)) {
             Country country = new Country();
             country.setName(name);
             try {
@@ -27,11 +27,11 @@ public class AddCountryCommand implements ActionCommand {
             } catch (ServiceException e) {
                 e.printStackTrace();
             }
-            httpSession.removeAttribute("countryAddError");
-            return "redirect:/controller?command=ADD_PARAMETERS_TO_FILM";
+            httpSession.removeAttribute("addError");
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
         } else {
-            httpSession.setAttribute("actorAddError", "Такая страна уже добавлен");
-            return "redirect:/controller?command=ADD_PARAMETERS_TO_FILM";
+            httpSession.setAttribute("addError", "Такой элемент уже добавлен");
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
         }
     }
 

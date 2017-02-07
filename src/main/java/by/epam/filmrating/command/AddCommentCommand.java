@@ -1,13 +1,12 @@
 package by.epam.filmrating.command;
 
 import by.epam.filmrating.entity.Comment;
+import by.epam.filmrating.entity.User;
 import by.epam.filmrating.exception.ServiceException;
 import by.epam.filmrating.service.CommentService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 public class AddCommentCommand implements ActionCommand {
@@ -19,11 +18,12 @@ public class AddCommentCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String userID = request.getParameter("userId");
+        HttpSession httpSession = request.getSession();
+        User user = (User) httpSession.getAttribute("user");
         String filmId = request.getParameter("filmId");
         String text = request.getParameter("text");
         Comment comment = new Comment();
-        comment.setUserId(Integer.parseInt(userID));
+        comment.setUserId(user.getUserId());
         comment.setFilmId(Integer.parseInt(filmId));
         comment.setText(text);
         comment.setCreationDate(new Date());

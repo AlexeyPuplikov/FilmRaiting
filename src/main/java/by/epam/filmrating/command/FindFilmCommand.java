@@ -6,12 +6,12 @@ import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.FilmService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 public class FindFilmCommand implements ActionCommand {
-    private final static String PATH_ERROR_PAGE = "path.page.findError";
-    private static final String PARAM_LOCALE = "locale";
-    private static final String PARAM_LANGUAGE = "language";
+    private final static String PATH_MAIN_USER_PAGE = "path.page.index";
+    private final static String PARAM_ERROR_SEARCH = "errorSearch";
+
+    private final static String ERROR = "Фильм не найден";
 
     private FilmService filmService;
 
@@ -22,22 +22,19 @@ public class FindFilmCommand implements ActionCommand {
     @Override
     public String execute(HttpServletRequest request) {
         ConfigurationManager configurationManager = new ConfigurationManager();
-        String name = request.getParameter("name");
+        String name = request.getParameter("filmName");
         Film film = null;
         try {
-            film = filmService.findFilmByName(name);
+            film = filmService.findEntityBySign(name);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
 
-        HttpSession session = request.getSession(true);
-        String currLocale = (String) session.getAttribute(PARAM_LANGUAGE);
-        request.setAttribute(PARAM_LOCALE, currLocale);
-
         if (film != null && film.getFilmId() != 0) {
             return "redirect:/controller?command=VIEW_FILM&filmId=" + film.getFilmId();
         } else {
-            return configurationManager.getProperty(PATH_ERROR_PAGE);
+            request.setAttribute(PARAM_ERROR_SEARCH, ERROR);
+            return configurationManager.getProperty(PATH_MAIN_USER_PAGE);
         }
     }
 }

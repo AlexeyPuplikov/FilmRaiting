@@ -8,19 +8,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><fmt:message key="title"/></title>
-    <link rel="stylesheet" href="../resources/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../resources/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="../resources/css/form-elements.css">
-    <link rel="stylesheet" href="../resources/css/styleregistration.css">
-    <script src="../resources/js/jquery-1.11.1.min.js"></script>
-    <script src="../resources/js/bootstrap.min.js"></script>
-    <script src="../resources/js/scripts.js"></script>
+    <link rel="stylesheet" href="<c:url value="/WEB_INF/resources/css/bootstrap.min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/WEB_INF/resources/fonts/font-awesome.min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/WEB_INF/resources/css/form-elements.css"/>">
+    <link rel="stylesheet" href="<c:url value="/WEB_INF/resources/css/styleregistration.css"/>">
+    <script src="<c:url value="/WEB_INF/resources/js/jquery-1.11.1.min.js"/>"></script>
+    <script src="<c:url value="/WEB_INF/resources/js/bootstrap.min.js"/>"></script>
+    <script src="<c:url value="/WEB_INF/resources/js/scripts.js"/>"></script>
 </head>
 <body>
 <div class="top-content">
     <div class="inner-bg">
         <div class="container">
-            <a href="/controller?command=VIEW_FILMS">На главную</a>
+            <a href="<c:url value="/controller?command=VIEW_FILMS"/>">На главную</a>
             <div class="row">
                 <div class="col-sm-5">
                     <div class="form-box">
@@ -31,18 +31,18 @@
                             </div>
                         </div>
                         <div class="form-bottom">
-                            <form role="form" action="/controller" method="post" class="login-form">
+                            <form role="form" action="<c:url value="/controller"/>" method="post" class="login-form">
                                 <input type="hidden" name="command" value="LOGIN">
                                 <div class="form-group">
                                     <label class="sr-only" for="form-username"><fmt:message key="label.login"/></label>
                                     <input type="text" name="login" class="form-username form-control" placeholder="Логин..."
-                                           id="form-username" />
+                                           id="form-username"/>
                                 </div>
                                 <div class="form-group">
                                     <label class="sr-only" for="form-password"><fmt:message
                                             key="label.password"/></label>
                                     <input type="password" name="password" class="form-password form-control" placeholder="Пароль..."
-                                           id="form-password" />
+                                           id="form-password"/>
                                 </div>
                                 <button type="submit" class="btn"><fmt:message key="label.enter"/></button>
                                 <p>${errorLogin}</p>
@@ -61,19 +61,19 @@
                             </div>
                         </div>
                         <div class="form-bottom">
-                            <form role="form" action="/controller" method="post" class="registration-form">
+                            <form role="form" action="<c:url value="/controller"/>" method="post" class="registration-form">
                                 <input type="hidden" name="command" value="REGISTRATION">
                                 <div class="form-group">
                                     <label class="sr-only" for="form-first-name"><fmt:message
                                             key="label.login"/></label>
                                     <input type="text" name="login" class="form-first-name form-control" placeholder="Логин..."
-                                           id="form-first-name" required pattern="^[a-zA-Z][a-zA-Z0-9-_]{4,16}$" title="латинские буквы, цифры, _, первый символ – латинская буква. Кол-во символов не менее 5">
+                                           id="form-first-name" pattern="^[a-zA-Z][a-zA-Z0-9-_]{4,16}$" title="латинские буквы, цифры, _, первый символ – латинская буква. Кол-во символов не менее 5">
                                 </div>
                                 <div class="form-group">
                                     <label class="sr-only" for="form-password"><fmt:message
                                             key="label.password"/></label>
                                     <input type="password" name="password" class="form-password form-control" placeholder="Пароль..."
-                                           id="form-password-registration" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,20}$" title="не менее 6 символов, не менее одной буквы в каждом регистре и не менее одной цифры"/>
+                                           id="form-password-registration" required="required" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,20}$" title="не менее 6 символов, не менее одной буквы в каждом регистре и не менее одной цифры"/>
                                 </div>
                                 <button type="submit" class="btn"><fmt:message key="label.registration"/></button>
                                 <p>${errorRegistration}</p>

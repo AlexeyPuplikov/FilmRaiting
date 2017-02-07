@@ -1,6 +1,5 @@
 package by.epam.filmrating.command;
 
-import by.epam.filmrating.entity.Film;
 import by.epam.filmrating.exception.ServiceException;
 import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.FilmService;
@@ -26,34 +25,26 @@ public class UploadFileCommand implements ActionCommand {
     public String execute(HttpServletRequest request) {
         ConfigurationManager configurationManager = new ConfigurationManager();
         InputStream inputStream = null;
-        Part filePart = null;
+        Part filePart;
         try {
             filePart = request.getPart("image");
-        } catch (IOException | ServletException e) {
-            e.printStackTrace();
-        }
-        if (filePart != null) {
-            System.out.println(filePart.getName());
-            System.out.println(filePart.getSize());
-            System.out.println(filePart.getContentType());
-
-            try {
+            if (filePart != null) {
                 inputStream = filePart.getInputStream();
                 BufferedImage image = ImageIO.read(inputStream);
                 image = image.getSubimage(0, 0, 350, 500);
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 ImageIO.write(image, "jpg", byteArrayOutputStream);
                 inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-                filmService.addCoverToFilm(inputStream, filmService.findFilmByName(request.getParameter("filmName")));
-            } catch (IOException | ServiceException e) {
-                e.printStackTrace();
-            } finally {
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                filmService.addCoverToFilm(inputStream, filmService.findEntityBySign(request.getParameter("filmName")));
+            }
+        } catch (IOException | ServiceException | ServletException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
