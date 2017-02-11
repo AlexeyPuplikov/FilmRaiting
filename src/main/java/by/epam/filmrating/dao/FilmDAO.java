@@ -37,6 +37,7 @@ public class FilmDAO extends AbstractDAO<Film> {
             + "JOIN FILM_HAS_GENRE FHG ON FHG.FILM_ID = F.FILM_ID AND GENRE_ID = ?";
     private final static String SELECT_FILM_BY_COUNTRY = "SELECT F.FILM_ID, F.NAME, YEAR, COUNTRY, DESCRIPTION, PREMIERE, TIME FROM FILM F "
             + "JOIN FILM_HAS_COUNTRY FHC ON FHC.FILM_ID = F.FILM_ID AND COUNTRY_ID = ?";
+    private final static String SELECT_LIMIT_FILMS = "SELECT FILM_ID, STAGE_DIRECTOR_ID, NAME, YEAR, DESCRIPTION, PREMIERE, TIME, BUDGET, COVER FROM FILM LIMIT ?,?";
 
     private final static String SELECT_FILM_RATING = "SELECT AVG(MARK) AS RATING FROM RATING WHERE FILM_ID = ?";
     private final static String SET_RATING = "CALL SET_RATING(?,?,?)";
@@ -70,7 +71,7 @@ public class FilmDAO extends AbstractDAO<Film> {
                 films.add(setFilmFields(resultSet));
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findAll films method", ex);
+            throw new DAOException("Error while executing findAll films method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -83,13 +84,13 @@ public class FilmDAO extends AbstractDAO<Film> {
         Film film = new Film();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_BY_ID, connection)) {
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                film = setFilmFields(resultSet);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    film = setFilmFields(resultSet);
+                }
             }
-            resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findFilmBySign method", ex);
+            throw new DAOException("Error while executing findFilmById method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -102,13 +103,13 @@ public class FilmDAO extends AbstractDAO<Film> {
         Film film = new Film();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_BY_NAME, connection)) {
             preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                film = setFilmFields(resultSet);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    film = setFilmFields(resultSet);
+                }
             }
-            resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findFilmByName method", ex);
+            throw new DAOException("Error while executing findFilmByName method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -134,7 +135,7 @@ public class FilmDAO extends AbstractDAO<Film> {
             preparedStatement.setInt(8, film.getBudget());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing create film method", ex);
+            throw new DAOException("Error while executing create film method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -152,7 +153,9 @@ public class FilmDAO extends AbstractDAO<Film> {
             preparedStatement.setInt(2, actor.getActorId());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing addActorsToFilm method", ex);
+            throw new DAOException("Error while executing addActorsToFilm method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
     }
 
@@ -163,7 +166,9 @@ public class FilmDAO extends AbstractDAO<Film> {
             preparedStatement.setInt(2, genre.getGenreId());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing addGenresToFilm method", ex);
+            throw new DAOException("Error while executing addGenresToFilm method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
     }
 
@@ -174,7 +179,9 @@ public class FilmDAO extends AbstractDAO<Film> {
             preparedStatement.setInt(2, country.getCountryId());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing addCountriesToFilm method", ex);
+            throw new DAOException("Error while executing addCountriesToFilm method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
     }
 
@@ -185,29 +192,30 @@ public class FilmDAO extends AbstractDAO<Film> {
             preparedStatement.setInt(2, film.getFilmId());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing addCoverToFilm method", ex);
+            throw new DAOException("Error while executing addCoverToFilm method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
     }
 
     public void loadCoverToFile(Film film, String fileName) throws DAOException {
         Connection connection = connectionPool.getConnection();
-        ResultSet resultSet;
         File file = new File(fileName);
         InputStream input = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_COVER, connection);
              FileOutputStream output = new FileOutputStream(file)) {
             preparedStatement.setInt(1, film.getFilmId());
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                input = resultSet.getBinaryStream(COVER);
-                byte[] buffer = new byte[1024];
-                while (input.read(buffer) > 0) {
-                    output.write(buffer);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    input = resultSet.getBinaryStream(COVER);
+                    byte[] buffer = new byte[1024];
+                    while (input.read(buffer) > 0) {
+                        output.write(buffer);
+                    }
                 }
             }
-            resultSet.close();
         } catch (SQLException | IOException ex) {
-            throw new DAOException("Error while executing addCoverToFilm method", ex);
+            throw new DAOException("Error while executing addCoverToFilm method.", ex);
         } finally {
             try {
                 if (input != null) {
@@ -216,6 +224,7 @@ public class FilmDAO extends AbstractDAO<Film> {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            this.closeConnection(connection);
         }
     }
 
@@ -240,13 +249,15 @@ public class FilmDAO extends AbstractDAO<Film> {
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(sql, connection)) {
             preparedStatement.setInt(1, entityId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                films.add(setFilmFields(resultSet));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    films.add(setFilmFields(resultSet));
+                }
             }
-            resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findHandler method", ex);
+            throw new DAOException("Error while executing findHandler method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
         return films;
     }
@@ -274,7 +285,7 @@ public class FilmDAO extends AbstractDAO<Film> {
             film.setComments(commentDAO.findEntitiesByFilm(resultSet.getInt(FILM_ID)));
             return film;
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing setFilmFields method", ex);
+            throw new DAOException("Error while executing setFilmFields method.", ex);
         }
     }
 
@@ -283,13 +294,15 @@ public class FilmDAO extends AbstractDAO<Film> {
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_RATING, connection)) {
             preparedStatement.setInt(1, filmId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                rating = resultSet.getDouble(RATING);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    rating = resultSet.getDouble(RATING);
+                }
             }
-            resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findFilmRating method", ex);
+            throw new DAOException("Error while executing findFilmRating method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
         return rating;
     }
@@ -302,28 +315,51 @@ public class FilmDAO extends AbstractDAO<Film> {
             preparedStatement.setInt(3, rating.getMark());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing setFilmRating method", ex);
+            throw new DAOException("Error while executing setFilmRating method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
     }
 
     public Rating findUserMarkToFilm(int userId, int filmId) throws DAOException {
         Connection connection = connectionPool.getConnection();
+        Rating rating = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_USER_MARK, connection)) {
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, filmId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                Rating rating = new Rating();
-                rating.setRatingId(resultSet.getInt(RATING_ID));
-                rating.setUserId(resultSet.getInt(USER_ID));
-                rating.setFilmId(resultSet.getInt(FILM_ID));
-                rating.setMark(resultSet.getInt(MARK));
-                return rating;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    rating = new Rating();
+                    rating.setRatingId(resultSet.getInt(RATING_ID));
+                    rating.setUserId(resultSet.getInt(USER_ID));
+                    rating.setFilmId(resultSet.getInt(FILM_ID));
+                    rating.setMark(resultSet.getInt(MARK));
+                }
             }
-            resultSet.close();
+            return rating;
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findUserMarkToFilm method", ex);
+            throw new DAOException("Error while executing findUserMarkToFilm method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
-        return null;
+    }
+
+    public List<Film> findLimitFilms(int offset, int recordNumber) throws DAOException {
+        List<Film> films = new ArrayList<>();
+        Connection connection = connectionPool.getConnection();
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_LIMIT_FILMS, connection)) {
+            preparedStatement.setInt(1, offset);
+            preparedStatement.setInt(2, recordNumber);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    films.add(setFilmFields(resultSet));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DAOException("Error while executing findLimitFilms method.", ex);
+        } finally {
+            this.closeConnection(connection);
+        }
+        return films;
     }
 }

@@ -4,7 +4,11 @@ import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.Actor;
 import by.epam.filmrating.exception.DAOException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,11 +55,11 @@ public class ActorDAO extends AbstractDAO<Actor> {
         Actor actor = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_ACTOR_BY_ID, connection)) {
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                actor = new Actor(resultSet.getInt(ACTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    actor = new Actor(resultSet.getInt(ACTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
+                }
             }
-            resultSet.close();
         } catch (SQLException ex) {
             throw new DAOException("Error while executing findActorBySign method", ex);
         } finally {
@@ -70,11 +74,11 @@ public class ActorDAO extends AbstractDAO<Actor> {
         Actor actor = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_ACTOR_BY_NAME, connection)) {
             preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                actor = new Actor(resultSet.getInt(ACTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    actor = new Actor(resultSet.getInt(ACTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
+                }
             }
-            resultSet.close();
         } catch (SQLException ex) {
             throw new DAOException("Error while executing findEntityBySign method", ex);
         } finally {
@@ -118,14 +122,14 @@ public class ActorDAO extends AbstractDAO<Actor> {
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(sql, connection)) {
             preparedStatement.setInt(1, filmId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Actor actor = new Actor(resultSet.getInt(ACTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
-                actors.add(actor);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Actor actor = new Actor(resultSet.getInt(ACTOR_ID), resultSet.getString(NAME), resultSet.getDate(DATE_OF_BIRTH), resultSet.getString(INFO));
+                    actors.add(actor);
+                }
             }
-            resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findActorsByFilm method", ex);
+            throw new DAOException("Error while executing findActorsByFilmHandler method", ex);
         } finally {
             this.closeConnection(connection);
         }

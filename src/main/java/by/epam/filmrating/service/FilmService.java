@@ -18,6 +18,7 @@ public class FilmService extends AbstractService<Film> {
     @Override
     public List<Film> findAll() throws ServiceException {
         List<Film> films;
+
         try {
             films = filmDAO.findAll();
             LOG.info("Retrieving film list with size: " + films.size());
@@ -32,6 +33,7 @@ public class FilmService extends AbstractService<Film> {
     @Override
     public Film findEntityBySign(int id) throws ServiceException {
         Film film;
+
         try {
             film = filmDAO.findEntityBySign(id);
             LOG.info("Retrieving film by id: " + film.getFilmId());
@@ -46,6 +48,7 @@ public class FilmService extends AbstractService<Film> {
     @Override
     public Film findEntityBySign(String name) throws ServiceException {
         Film film;
+
         try {
             film = filmDAO.findEntityBySign(name);
             LOG.info("Retrieving film by name: " + film.getFilmId());
@@ -124,7 +127,7 @@ public class FilmService extends AbstractService<Film> {
             return filmDAO.addCoverToFilm(inputStream, film);
 
         } catch (DAOException ex) {
-            LOG.error("Error while adding country to film.");
+            LOG.error("Error while adding cover to film.");
             throw new ServiceException(ex);
         }
     }
@@ -135,7 +138,7 @@ public class FilmService extends AbstractService<Film> {
             filmDAO.loadCoverToFile(film, fileName);
 
         } catch (DAOException ex) {
-            LOG.error("Error while adding country to film.");
+            LOG.error("Error while adding cover to film.");
             throw new ServiceException(ex);
         }
     }
@@ -213,6 +216,17 @@ public class FilmService extends AbstractService<Film> {
 
         } catch (DAOException ex) {
             LOG.error("Error while retrieving user mark to film.");
+            throw new ServiceException(ex);
+        }
+    }
+
+    public List<Film> findLimitFilms(int offset, int recordNumber) throws ServiceException {
+        try {
+            LOG.info("Retrieving offset films");
+            return filmDAO.findLimitFilms(offset, recordNumber);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving offset films.");
             throw new ServiceException(ex);
         }
     }

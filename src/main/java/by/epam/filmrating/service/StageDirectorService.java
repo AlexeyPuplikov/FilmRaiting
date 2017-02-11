@@ -17,6 +17,7 @@ public class StageDirectorService extends AbstractService<StageDirector> {
     @Override
     public List<StageDirector> findAll() throws ServiceException {
         List<StageDirector> stageDirectors;
+
         try {
             stageDirectors = stageDirectorDAO.findAll();
             LOG.info("Retrieving stage directors list with size: " + stageDirectors.size());
@@ -83,6 +84,7 @@ public class StageDirectorService extends AbstractService<StageDirector> {
 
     public StageDirector findEntityByFilm(int id) throws ServiceException {
         StageDirector stageDirector;
+
         try {
             stageDirector = stageDirectorDAO.findEntityByFilm(id);
             LOG.info("Retrieving stage director by film: " + id);

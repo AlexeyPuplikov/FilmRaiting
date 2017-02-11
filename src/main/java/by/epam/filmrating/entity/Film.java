@@ -13,10 +13,10 @@ public class Film extends Entity {
     private Date premiere;
     private int time;
     private int budget;
-    private List<Country> countries = new ArrayList<Country>();
-    private List<Genre> genres = new ArrayList<Genre>();
-    private List<Actor> actors = new ArrayList<Actor>();
-    private List<Comment> comments = new ArrayList<Comment>();
+    private List<Country> countries = new ArrayList<>();
+    private List<Genre> genres = new ArrayList<>();
+    private List<Actor> actors = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
     private Blob cover;
 
     public Film() {
@@ -150,18 +150,7 @@ public class Film extends Entity {
 
         Film film = (Film) o;
 
-        if (year != film.year) return false;
-        if (time != film.time) return false;
-        if (budget != film.budget) return false;
-        if (!stageDirector.equals(film.stageDirector)) return false;
-        if (!name.equals(film.name)) return false;
-        if (!description.equals(film.description)) return false;
-        if (!premiere.equals(film.premiere)) return false;
-        if (!countries.equals(film.countries)) return false;
-        if (!genres.equals(film.genres)) return false;
-        if (!actors.equals(film.actors)) return false;
-        if (!comments.equals(film.comments)) return false;
-        return cover.equals(film.cover);
+        return year == film.year && time == film.time && budget == film.budget && stageDirector.equals(film.stageDirector) && name.equals(film.name) && description.equals(film.description) && premiere.equals(film.premiere) && countries.equals(film.countries) && genres.equals(film.genres) && actors.equals(film.actors) && comments.equals(film.comments) && cover.equals(film.cover);
 
     }
 

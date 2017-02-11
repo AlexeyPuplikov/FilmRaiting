@@ -31,6 +31,7 @@ public class ActorService extends AbstractService<Actor> {
     @Override
     public Actor findEntityBySign(int id) throws ServiceException {
         Actor actor;
+
         try {
             actor = actorDAO.findEntityBySign(id);
             LOG.info("Retrieving actor by id: " + actor.getActorId());
@@ -45,6 +46,7 @@ public class ActorService extends AbstractService<Actor> {
     @Override
     public Actor findEntityBySign(String name) throws ServiceException {
         Actor actor;
+
         try {
             actor = actorDAO.findEntityBySign(name);
             LOG.info("Retrieving actor by name: " + actor.getName());
@@ -83,6 +85,7 @@ public class ActorService extends AbstractService<Actor> {
     @Override
     public List<Actor> findEntitiesByFilm(int id) throws ServiceException {
         List<Actor> actors;
+
         try {
             actors = actorDAO.findEntitiesByFilm(id);
             LOG.info("Retrieving actors by film id: " + id);
@@ -96,6 +99,7 @@ public class ActorService extends AbstractService<Actor> {
 
     public List<Actor> findEntitiesNotInFilm(int id) throws ServiceException {
         List<Actor> actors;
+
         try {
             actors = actorDAO.findEntitiesNotInFilm(id);
             LOG.info("Retrieving actors not in film" + id);

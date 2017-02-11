@@ -17,6 +17,7 @@ public class CountryService extends AbstractService<Country> {
     @Override
     public List<Country> findAll() throws ServiceException {
         List<Country> countries;
+
         try {
             countries = countryDAO.findAll();
             LOG.info("Retrieving country list: " + countries.size());
@@ -31,6 +32,7 @@ public class CountryService extends AbstractService<Country> {
     @Override
     public Country findEntityBySign(int id) throws ServiceException {
         Country country;
+
         try {
             country = countryDAO.findEntityBySign(id);
             LOG.info("Retrieving country by id: " + id);
@@ -45,6 +47,7 @@ public class CountryService extends AbstractService<Country> {
     @Override
     public Country findEntityBySign(String name) throws ServiceException {
         Country country;
+
         try {
             country = countryDAO.findEntityBySign(name);
             LOG.info("Retrieving country by name: " + name);
@@ -96,6 +99,7 @@ public class CountryService extends AbstractService<Country> {
 
     public List<Country> findEntitiesNotInFilm(int id) throws ServiceException {
         List<Country> countries;
+
         try {
             countries = countryDAO.findEntitiesNotInFilm(id);
             LOG.info("Retrieving countries by film id: " + id);

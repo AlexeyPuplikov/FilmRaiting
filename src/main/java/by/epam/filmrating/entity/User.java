@@ -6,20 +6,23 @@ public class User extends Entity {
     private String login;
     private String password;
     private String status;
+    private Boolean isBlocked;
     private EnumRole role;
 
     public User() {
         super();
         this.setStatus("NEW");
         this.setRole(EnumRole.USER);
+        this.isBlocked = false;
     }
 
-    public User(int userId, String login, String password, String status, String role) {
+    public User(int userId, String login, String password, String status, String role, Boolean isBlocked) {
         super(userId);
         this.login = login;
         this.password = password;
         this.status = String.valueOf(EnumStatus.valueOf(status));
         this.role = EnumRole.valueOf(role);
+        this.isBlocked = isBlocked;
     }
 
     public int getUserId() {
@@ -60,6 +63,14 @@ public class User extends Entity {
 
     public void setRole(EnumRole role) {
         this.role = role;
+    }
+
+    public Boolean getBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(Boolean blocked) {
+        isBlocked = blocked;
     }
 
     @Override

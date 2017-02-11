@@ -25,32 +25,44 @@ public class SetRatingCommand implements ActionCommand {
     public String execute(HttpServletRequest request) {
         HttpSession httpSession = request.getSession();
         User currentUser = (User) httpSession.getAttribute("user");
-        String film = request.getParameter("filmId");
-        String mark = request.getParameter("mark");
+        int filmId = Integer.parseInt(request.getParameter("filmId"));
+        int mark = Integer.parseInt(request.getParameter("mark"));
         Rating rating = new Rating();
         rating.setUserId(currentUser.getUserId());
-        rating.setFilmId(Integer.parseInt(film));
-        rating.setMark(Integer.parseInt(mark));
-        List<User> users;
-        List<Rating> userMark = new ArrayList<>();
-        Double filmRating;
-        Double difference;
+        rating.setFilmId(filmId);
+        rating.setMark(mark);
         try {
-            users = userService.findAll();
             filmService.setFilmRating(rating);
-            for (User user : users) {
-                userMark.add(filmService.findUserMarkToFilm(user.getUserId(), Integer.parseInt(film)));
-            }
-            filmRating = filmService.findFilmRating(Integer.parseInt(film));
-            difference = Math.abs(filmRating - Integer.parseInt(mark));
-            if (userMark.size() >= 5 && (difference <= 2 || difference >= 2) && EnumStatus.valueOf(currentUser.getStatus()).ordinal() < 5) {
-                userService.updateStatus(currentUser.getUserId(), EnumStatus.valueOf(currentUser.getStatus()).ordinal() + 2);
+            if (this.updateStatus(filmId, mark, currentUser)) {
+                httpSession.removeAttribute("user");
+                httpSession.setAttribute("user", userService.findEntityBySign(currentUser.getUserId()));
                 httpSession.removeAttribute("status");
                 httpSession.setAttribute("status", EnumStatus.valueOf(userService.findEntityBySign(currentUser.getUserId()).getStatus()).getName());
             }
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-        return "redirect:/controller?command=VIEW_FILM&filmId=" + film;
+        return "redirect:/controller?command=VIEW_FILM&filmId=" + filmId;
+    }
+
+    public boolean updateStatus(int filmId, int mark, User currentUser) throws ServiceException {
+        List<User> users;
+        List<Rating> userMark = new ArrayList<>();
+        Double filmRating;
+        Double difference;
+        users = userService.findAll();
+        for (User user : users) {
+            if (filmService.findUserMarkToFilm(user.getUserId(), filmId) != null) {
+                userMark.add(filmService.findUserMarkToFilm(user.getUserId(), filmId));
+            }
+        }
+        filmRating = filmService.findFilmRating(filmId);
+        difference = Math.abs(filmRating - mark);
+        if (userMark.size() >= 5 && (difference <= 2 || difference >= 2) && EnumStatus.valueOf(currentUser.getStatus()).ordinal() != 3) {
+            userService.updateStatus(currentUser.getUserId(), EnumStatus.valueOf(currentUser.getStatus()).ordinal() + 2);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

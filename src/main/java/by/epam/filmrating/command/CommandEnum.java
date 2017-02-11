@@ -105,8 +105,17 @@ public enum CommandEnum {
         {
             this.command = new OpenMainAdminPageCommand();
         }
-    }
-    ;
+    },
+    USER_CONTROL {
+        {
+            this.command = new UserControlCommand();
+        }
+    },
+    OPEN_USER_CONTROL_PAGE {
+        {
+            this.command = new OpenUserControlPageCommand();
+        }
+    };
 
     ActionCommand command;
     public ActionCommand getCurrentCommand() {

@@ -6,8 +6,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="<c:url value="/WEB_INF/resources/css/bootstrap.min.css"/>"/>
-    <link rel="stylesheet" type="text/css" href="<c:url value="/WEB_INF/resources/css/style.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.min.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/style.css"/>"/>
     <title>${film.name}</title>
 </head>
 <body>
@@ -16,9 +16,9 @@
     <div class="container">
         <div class="change-language">
             <a href="<c:url value="/controller?command=CHANGE_LANGUAGE&language=ru_RU&page=/controller?command=VIEW_FILM&filmId=${film.id}"/>"><img
-                    src="<c:url value="/WEB_INF/resources/images/lang-ru.png"/>"></a>
+                    src="<c:url value="/resources/images/lang-ru.png"/>"></a>
             <a href="<c:url value="/controller?command=CHANGE_LANGUAGE&language=en_US&page=/controller?command=VIEW_FILM&filmId=${film.id}"/>"><img
-                    src="<c:url value="/WEB_INF/resources/images/lang-en.png"/>"></a>
+                    src="<c:url value="/resources/images/lang-en.png"/>"></a>
         </div>
         <div class="container">
             <div class="login">
@@ -36,7 +36,7 @@
         </div>
         <nav>
             <ul class="nav nav-pills nav-justified">
-                <li class="active"><a href="<c:url value="/controller?command=VIEW_FILMS"/>"><fmt:message
+                <li class="active"><a href="<c:url value="/controller?command=VIEW_FILMS&page=1&recordsPerPage=4"/>"><fmt:message
                         key="label.toHome"/></a></li>
             </ul>
         </nav>
@@ -46,7 +46,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-5 main-img">
-                <img src="/WEB_INF/resources/images/${film.name}.jpg" alt="...">
+                <img src="/resources/images/${film.name}.jpg" alt="...">
             </div>
             <div class="col-md-7">
                 <h2>${film.name}</h2>
@@ -113,7 +113,7 @@
         </div>
         <div class="row">
             <c:choose>
-                <c:when test="${user != null}">
+                <c:when test="${user != null && user.blocked == false}">
                     <form class="form" action="<c:url value="/controller"/>" method="post">
                         <input type="hidden" name="command" value="ADD_COMMENT">
                         <input type="hidden" name="filmId" value="${film.id}">

@@ -51,6 +51,7 @@ public class LoginCommand implements ActionCommand {
             return configurationManager.getProperty(PATH_INDEX_PAGE);
         } else {
             if (user != null && user.getRole() == EnumRole.ADMIN) {
+                httpSession.setAttribute("admin", user);
                 return "redirect:/controller?command=OPEN_MAIN_ADMIN_PAGE";
             }
             request.setAttribute(PARAM_ERROR_LOGIN, ERROR);

@@ -17,6 +17,7 @@ public class UserService extends AbstractService<User> {
     @Override
     public List<User> findAll() throws ServiceException {
         List<User> users;
+
         try {
             users = userDAO.findAll();
             LOG.info("Retrieving user list: " + users.size());
@@ -80,8 +81,20 @@ public class UserService extends AbstractService<User> {
         }
     }
 
+    public boolean updateIsBlocked(int userId, boolean isBlocked) throws ServiceException {
+        try {
+            LOG.info("Update user isBlocked.");
+            return userDAO.updateIsBlocked(userId, isBlocked);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while update user isBlocked.", ex);
+            throw new ServiceException();
+        }
+    }
+
     public User findUserByLogin(String login, String password) throws ServiceException {
         User user;
+
         try {
             user = userDAO.findUserByLogin(login, password);
             LOG.info("Retrieving user by login: " + login);

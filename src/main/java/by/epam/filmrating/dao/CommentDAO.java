@@ -44,6 +44,8 @@ public class CommentDAO extends AbstractDAO<Comment> {
             return preparedStatement.execute();
         } catch (SQLException ex) {
             throw new DAOException("Error while executing create comment method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
     }
 
@@ -53,14 +55,14 @@ public class CommentDAO extends AbstractDAO<Comment> {
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_COMMENTS_BY_FILM, connection)) {
             preparedStatement.setInt(1, filmId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Comment comment = new Comment(resultSet.getInt(COMMENT_ID), resultSet.getString(TEXT), resultSet.getInt(FILM_ID), resultSet.getInt(USER_ID), resultSet.getTimestamp(CREATION_DATE));
-                comments.add(comment);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Comment comment = new Comment(resultSet.getInt(COMMENT_ID), resultSet.getString(TEXT), resultSet.getInt(FILM_ID), resultSet.getInt(USER_ID), resultSet.getTimestamp(CREATION_DATE));
+                    comments.add(comment);
+                }
             }
-            resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findCommentsByFilm method", ex);
+            throw new DAOException("Error while executing findCommentsByFilm method.", ex);
         } finally {
             this.closeConnection(connection);
         }

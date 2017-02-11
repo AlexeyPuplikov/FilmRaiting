@@ -39,7 +39,7 @@ public class CountryDAO extends AbstractDAO<Country> {
                 countries.add(country);
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findAll countries method", ex);
+            throw new DAOException("Error while executing findAll countries method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -52,14 +52,14 @@ public class CountryDAO extends AbstractDAO<Country> {
         Country country = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_COUNTRY_BY_ID, connection)) {
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                country = new Country(resultSet.getInt(COUNTRY_ID), resultSet.getString(NAME));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    country = new Country(resultSet.getInt(COUNTRY_ID), resultSet.getString(NAME));
+                }
             }
-            resultSet.close();
             return country;
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findCountryBySign method", ex);
+            throw new DAOException("Error while executing findCountryBySign method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -71,14 +71,14 @@ public class CountryDAO extends AbstractDAO<Country> {
         Country country = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_COUNTRY_BY_NAME, connection)) {
             preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                country = new Country(resultSet.getInt(COUNTRY_ID), resultSet.getString(NAME));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    country = new Country(resultSet.getInt(COUNTRY_ID), resultSet.getString(NAME));
+                }
             }
-            resultSet.close();
             return country;
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findCountryBySign method", ex);
+            throw new DAOException("Error while executing findCountryBySign method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -97,7 +97,9 @@ public class CountryDAO extends AbstractDAO<Country> {
             preparedStatement.setString(2, country.getName());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing create country method", ex);
+            throw new DAOException("Error while executing create country method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
     }
 
@@ -115,14 +117,14 @@ public class CountryDAO extends AbstractDAO<Country> {
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(sql, connection)) {
             preparedStatement.setInt(1, filmId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Country country = new Country(resultSet.getInt(COUNTRY_ID), resultSet.getString(NAME));
-                countries.add(country);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Country country = new Country(resultSet.getInt(COUNTRY_ID), resultSet.getString(NAME));
+                    countries.add(country);
+                }
             }
-            resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findCountriesByFilmHandler method", ex);
+            throw new DAOException("Error while executing findCountriesByFilmHandler method.", ex);
         } finally {
             this.closeConnection(connection);
         }

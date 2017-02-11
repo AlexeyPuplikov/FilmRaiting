@@ -17,6 +17,7 @@ public class GenreService extends AbstractService<Genre> {
     @Override
     public List<Genre> findAll() throws ServiceException {
         List<Genre> genres;
+
         try {
             genres = genreDAO.findAll();
             LOG.info("Retrieving genre list: " + genres.size());
@@ -31,6 +32,7 @@ public class GenreService extends AbstractService<Genre> {
     @Override
     public Genre findEntityBySign(int id) throws ServiceException {
         Genre genre;
+
         try {
             genre = genreDAO.findEntityBySign(id);
             LOG.info("Retrieving genre by id: " + id);
@@ -45,6 +47,7 @@ public class GenreService extends AbstractService<Genre> {
     @Override
     public Genre findEntityBySign(String name) throws ServiceException {
         Genre genre;
+
         try {
             genre = genreDAO.findEntityBySign(name);
             LOG.info("Retrieving genre by name: " + name);
@@ -83,6 +86,7 @@ public class GenreService extends AbstractService<Genre> {
     @Override
     public List<Genre> findEntitiesByFilm(int id) throws ServiceException {
         List<Genre> genres;
+
         try {
             genres = genreDAO.findEntitiesByFilm(id);
             LOG.info("Retrieving genres by film id: " + id);
@@ -96,6 +100,7 @@ public class GenreService extends AbstractService<Genre> {
 
     public List<Genre> findEntitiesNotInFilm(int id) throws ServiceException {
         List<Genre> genres;
+
         try {
             genres = genreDAO.findEntitiesNotInFilm(id);
             LOG.info("Retrieving genres by film id: " + id);

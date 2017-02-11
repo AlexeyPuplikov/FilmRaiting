@@ -5,14 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Добавление фильма</title>
-    <link rel="stylesheet" href="<c:url value="/WEB_INF/resources/css/bootstrap.min.css"/>">
-    <link rel="stylesheet" href="<c:url value="/WEB_INF/resources/fonts/font-awesome.min.css"/>">
-    <link rel="stylesheet" href="<c:url value="/WEB_INF/resources/css/form-elements.css"/>">
-    <link rel="stylesheet" href="<c:url value="/WEB_INF/resources/css/styleregistration.css"/>">
-    <link rel="stylesheet" type="text/css" href="<c:url value="/WEB_INF/resources/css/style.css"/>">
-    <script src="<c:url value="/WEB_INF/resources/js/jquery-1.11.1.min.js"/>"></script>
-    <script src="<c:url value="/WEB_INF/resources/js/bootstrap.min.js"/>"></script>
-    <script src="<c:url value="/WEB_INF/resources/js/scripts.js"/>"></script>
+    <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/fonts/font-awesome.min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/form-elements.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/styleregistration.css"/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/style.css"/>">
+    <script src="<c:url value="/resources/js/jquery-1.11.1.min.js"/>"></script>
+    <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
+    <script src="<c:url value="/resources/js/scripts.js"/>"></script>
 </head>
 <body>
 <div class="top-content">

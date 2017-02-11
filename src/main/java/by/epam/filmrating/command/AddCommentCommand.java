@@ -3,6 +3,7 @@ package by.epam.filmrating.command;
 import by.epam.filmrating.entity.Comment;
 import by.epam.filmrating.entity.User;
 import by.epam.filmrating.exception.ServiceException;
+import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.CommentService;
 
 import javax.servlet.http.HttpServletRequest;

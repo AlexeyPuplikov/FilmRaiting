@@ -65,9 +65,7 @@ public class Comment extends Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         Comment comment = (Comment) o;
-
         return filmId == comment.filmId && userId == comment.userId && text.equals(comment.text);
     }
 

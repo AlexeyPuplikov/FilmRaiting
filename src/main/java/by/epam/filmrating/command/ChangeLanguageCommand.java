@@ -21,7 +21,7 @@ public class ChangeLanguageCommand implements ActionCommand {
         if(request.getParameter("filmId") != null) {
             return "redirect:" + request.getParameter("page") + "&filmId=" + request.getParameter("filmId");
         } else {
-            return "redirect:" + request.getParameter("page");
+            return "redirect:/index.jsp";
         }
     }
 }

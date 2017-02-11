@@ -28,6 +28,9 @@ public class OpenMainAdminPageCommand implements ActionCommand {
         }
         request.setAttribute(PARAM_FILMS, films);
         ConfigurationManager configurationManager = new ConfigurationManager();
-        return configurationManager.getProperty(PATH_ADMIN_PAGE);
+        if (request.getSession().getAttribute("admin") != null) {
+            return configurationManager.getProperty(PATH_ADMIN_PAGE);
+        }
+        return configurationManager.getProperty("path.page.login");
     }
 }

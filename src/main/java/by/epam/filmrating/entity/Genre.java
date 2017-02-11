@@ -33,8 +33,11 @@ public class Genre extends Entity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
+
         Genre genre = (Genre) o;
-        return name == genre.name;
+
+        return name.equals(genre.name);
+
     }
 
     @Override

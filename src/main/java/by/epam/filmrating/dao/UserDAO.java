@@ -14,17 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO extends AbstractDAO<User> {
-    private final static String SELECT_USER = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID GROUP BY U.USER_ID";
-    private final static String SELECT_USER_BY_ID = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID WHERE U.USER_ID = ?";
-    private final static String SELECT_USER_BY_LOGIN = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID WHERE U.LOGIN = ? AND U.PASSWORD = SHA(?)";
+    private final static String SELECT_USER = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE, IS_BLOCKED FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID GROUP BY U.USER_ID";
+    private final static String SELECT_USER_BY_ID = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE, IS_BLOCKED FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID WHERE U.USER_ID = ?";
+    private final static String SELECT_USER_BY_LOGIN = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE, IS_BLOCKED FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID WHERE U.LOGIN = ? AND U.PASSWORD = SHA(?)";
     private final static String INSERT_USER = "INSERT INTO USER(LOGIN, PASSWORD, STATUS_ID, ROLE_ID) VALUES(?,SHA(?),?,?)";
     private final static String UPDATE_STATUS = "UPDATE USER SET STATUS_ID = ? WHERE USER_ID = ?";
+    private final static String UPDATE_IS_BLOCKED = "UPDATE USER SET IS_BLOCKED = ? WHERE USER_ID = ?";
 
     private final static String USER_ID = "USER_ID";
     private final static String LOGIN = "LOGIN";
     private final static String PASSWORD = "PASSWORD";
     private final static String STATUS = "STATUS";
     private final static String ROLE = "ROLE";
+    private final static String IS_BLOCKED = "IS_BLOCKED";
 
     public UserDAO() {
         this.connectionPool = DBConnectionPool.getInstance();
@@ -37,11 +39,11 @@ public class UserDAO extends AbstractDAO<User> {
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_USER, connection);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                User user = new User(resultSet.getInt(USER_ID), resultSet.getString(LOGIN), resultSet.getString(PASSWORD), resultSet.getString(STATUS), EnumRole.valueOf(resultSet.getString(ROLE)).name());
+                User user = new User(resultSet.getInt(USER_ID), resultSet.getString(LOGIN), resultSet.getString(PASSWORD), resultSet.getString(STATUS), EnumRole.valueOf(resultSet.getString(ROLE)).name(), resultSet.getBoolean(IS_BLOCKED));
                 users.add(user);
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findAll user method", ex);
+            throw new DAOException("Error while executing findAll user method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -54,12 +56,13 @@ public class UserDAO extends AbstractDAO<User> {
         User user = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_USER_BY_ID, connection)) {
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            user = new User(resultSet.getInt(USER_ID), resultSet.getString(LOGIN), resultSet.getString(PASSWORD), resultSet.getString(STATUS), EnumRole.valueOf(resultSet.getString(ROLE)).name());
-            resultSet.close();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    user = new User(resultSet.getInt(USER_ID), resultSet.getString(LOGIN), resultSet.getString(PASSWORD), resultSet.getString(STATUS), EnumRole.valueOf(resultSet.getString(ROLE)).name(), resultSet.getBoolean(IS_BLOCKED));
+                }
+            }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findUserBySign method", ex);
+            throw new DAOException("Error while executing findUserById method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -81,7 +84,9 @@ public class UserDAO extends AbstractDAO<User> {
             preparedStatement.setInt(4, EnumRole.valueOf(String.valueOf(user.getRole())).ordinal() + 1);
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing create user method", ex);
+            throw new DAOException("Error while executing create user method.", ex);
+        } finally {
+            this.closeConnection(connection);
         }
     }
 
@@ -102,7 +107,20 @@ public class UserDAO extends AbstractDAO<User> {
             preparedStatement.setInt(2, userId);
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing updateStatus method", ex);
+            throw new DAOException("Error while executing updateStatus method.", ex);
+        } finally {
+            this.closeConnection(connection);
+        }
+    }
+
+    public boolean updateIsBlocked(int userId, boolean isBlocked) throws DAOException {
+        Connection connection = connectionPool.getConnection();
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(UPDATE_IS_BLOCKED, connection)) {
+            preparedStatement.setBoolean(1, isBlocked);
+            preparedStatement.setInt(2, userId);
+            return preparedStatement.execute();
+        } catch (SQLException ex) {
+            throw new DAOException("Error while executing updateIsBlocked method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -114,13 +132,13 @@ public class UserDAO extends AbstractDAO<User> {
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_USER_BY_LOGIN, connection)) {
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, password);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                user = new User(resultSet.getInt(USER_ID), resultSet.getString(LOGIN), resultSet.getString(PASSWORD), resultSet.getString(STATUS), EnumRole.valueOf(resultSet.getString(ROLE)).name());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    user = new User(resultSet.getInt(USER_ID), resultSet.getString(LOGIN), resultSet.getString(PASSWORD), resultSet.getString(STATUS), EnumRole.valueOf(resultSet.getString(ROLE)).name(), resultSet.getBoolean(IS_BLOCKED));
+                }
             }
-            resultSet.close();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findUserByLogin method", ex);
+            throw new DAOException("Error while executing findUserByLogin method.", ex);
         } finally {
             this.closeConnection(connection);
         }
