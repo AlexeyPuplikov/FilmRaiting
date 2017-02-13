@@ -1,27 +1,22 @@
 package by.epam.filmrating.command;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 public class ChangeLanguageCommand implements ActionCommand {
     private static final String PARAM_LANGUAGE = "language";
     private static final String PARAM_LOCALE = "locale";
 
-
     @Override
     public String execute(HttpServletRequest request) {
         String language = request.getParameter(PARAM_LANGUAGE);
-        HttpSession session = request.getSession(true);
 
         if (!language.isEmpty()) {
-            session.setAttribute(PARAM_LANGUAGE, language);
+            request.getSession().setAttribute(PARAM_LANGUAGE, language);
             request.setAttribute(PARAM_LOCALE, language);
         }
-
-        if(request.getParameter("filmId") != null) {
-            return "redirect:" + request.getParameter("page") + "&filmId=" + request.getParameter("filmId");
-        } else {
-            return "redirect:/index.jsp";
+        if (request.getSession().getAttribute("admin") != null) {
+            return "/controller?command=OPEN_MAIN_ADMIN_PAGE";
         }
+        return "/controller?command=VIEW_FILMS&page=1&recordsPerPage=4";
     }
 }

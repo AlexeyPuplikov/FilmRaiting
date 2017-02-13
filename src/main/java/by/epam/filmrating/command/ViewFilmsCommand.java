@@ -46,7 +46,7 @@ public class ViewFilmsCommand implements ActionCommand {
                 }
             }
         } catch (ServiceException e) {
-            request.setAttribute(PARAM_EXCEPTION, SERVICE_ERROR);
+            request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
             configurationManager.getProperty(PATH_ERROR_PAGE);
         }
 

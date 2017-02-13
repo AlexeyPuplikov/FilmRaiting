@@ -2,13 +2,20 @@ package by.epam.filmrating.command;
 
 import by.epam.filmrating.entity.Country;
 import by.epam.filmrating.exception.ServiceException;
+import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.CountryService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public class AddCountryCommand implements ActionCommand {
+    private final static String PATH_ERROR_PAGE = "path.page.error";
+    private final static String PARAM_EXCEPTION = "exception";
+    private final static String SERVICE_ERROR = "error.service";
+    private final static String PARAM_COUNTRY_NAME = "countryName";
+    private final static String ADD_PARAMETERS_SUCCESSFUL = "successful";
+    private final static String ADD_PARAMETERS_ERROR = "error";
+
     private CountryService countryService;
 
     public AddCountryCommand() {
@@ -17,21 +24,20 @@ public class AddCountryCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String name = request.getParameter("countryName");
-        HttpSession httpSession = request.getSession();
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        String name = request.getParameter(PARAM_COUNTRY_NAME);
         if (checkName(name)) {
             Country country = new Country();
             country.setName(name);
             try {
                 countryService.create(country);
             } catch (ServiceException e) {
-                e.printStackTrace();
+                request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+                return configurationManager.getProperty(PATH_ERROR_PAGE);
             }
-            httpSession.removeAttribute("addError");
-            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&successfulAddParameters=" + ADD_PARAMETERS_SUCCESSFUL;
         } else {
-            httpSession.setAttribute("addError", "Такой элемент уже добавлен");
-            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&errorAddParameters=" + ADD_PARAMETERS_ERROR;
         }
     }
 
@@ -41,7 +47,7 @@ public class AddCountryCommand implements ActionCommand {
         try {
             countries = this.countryService.findAll();
             for (Country country : countries) {
-                if (country.getName().equals(name)) {
+                if (country.getName().equalsIgnoreCase(name)) {
                     check = false;
                 }
             }

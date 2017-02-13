@@ -4,6 +4,7 @@ import by.epam.filmrating.entity.EnumStatus;
 import by.epam.filmrating.entity.Rating;
 import by.epam.filmrating.entity.User;
 import by.epam.filmrating.exception.ServiceException;
+import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.FilmService;
 import by.epam.filmrating.service.UserService;
 
@@ -13,6 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SetRatingCommand implements ActionCommand {
+    private final static String PATH_ERROR_PAGE = "path.page.error";
+    private final static String PARAM_USER = "user";
+    private final static String PARAM_FILM_ID = "filmId";
+    private final static String PARAM_MARK = "mark";
+    private final static String PARAM_EXCEPTION = "exception";
+    private final static String SERVICE_ERROR = "error.service";
+
     private FilmService filmService;
     private UserService userService;
 
@@ -23,10 +31,11 @@ public class SetRatingCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
+        ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession httpSession = request.getSession();
-        User currentUser = (User) httpSession.getAttribute("user");
-        int filmId = Integer.parseInt(request.getParameter("filmId"));
-        int mark = Integer.parseInt(request.getParameter("mark"));
+        User currentUser = (User) httpSession.getAttribute(PARAM_USER);
+        int filmId = Integer.parseInt(request.getParameter(PARAM_FILM_ID));
+        int mark = Integer.parseInt(request.getParameter(PARAM_MARK));
         Rating rating = new Rating();
         rating.setUserId(currentUser.getUserId());
         rating.setFilmId(filmId);
@@ -40,7 +49,8 @@ public class SetRatingCommand implements ActionCommand {
                 httpSession.setAttribute("status", EnumStatus.valueOf(userService.findEntityBySign(currentUser.getUserId()).getStatus()).getName());
             }
         } catch (ServiceException e) {
-            e.printStackTrace();
+            request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+            configurationManager.getProperty(PATH_ERROR_PAGE);
         }
         return "redirect:/controller?command=VIEW_FILM&filmId=" + filmId;
     }
@@ -58,7 +68,7 @@ public class SetRatingCommand implements ActionCommand {
         }
         filmRating = filmService.findFilmRating(filmId);
         difference = Math.abs(filmRating - mark);
-        if (userMark.size() >= 5 && (difference <= 2 || difference >= 2) && EnumStatus.valueOf(currentUser.getStatus()).ordinal() != 3) {
+        if (userMark.size() >= 10 && (difference <= 2) && EnumStatus.valueOf(currentUser.getStatus()).ordinal() != 3) {
             userService.updateStatus(currentUser.getUserId(), EnumStatus.valueOf(currentUser.getStatus()).ordinal() + 2);
             return true;
         } else {

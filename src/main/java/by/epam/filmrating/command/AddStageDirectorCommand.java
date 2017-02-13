@@ -2,16 +2,25 @@ package by.epam.filmrating.command;
 
 import by.epam.filmrating.entity.StageDirector;
 import by.epam.filmrating.exception.ServiceException;
+import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.StageDirectorService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class AddStageDirectorCommand implements ActionCommand {
+    private final static String PATH_ERROR_PAGE = "path.page.error";
+    private final static String PARAM_EXCEPTION = "exception";
+    private final static String SERVICE_ERROR = "error.service";
+    private final static String PARAM_STAGE_DIRECTOR_NAME = "stageDirectorName";
+    private final static String PARAM_DATE_OF_BIRTH = "stageDirectorDateOfBirth";
+    private final static String PARAM_INFORMATION = "infoStageDirector";
+    private final static String FORMAT_DATE = "yyyy-MM-dd";
+    private final static String ADD_PARAMETERS_SUCCESSFUL = "successful";
+    private final static String ADD_PARAMETERS_ERROR = "error";
 
     private StageDirectorService stageDirectorService;
 
@@ -21,32 +30,30 @@ public class AddStageDirectorCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String name = request.getParameter("stageDirectorName");
-        String dateOfBirthParam = request.getParameter("stageDirectorDateOfBirth");
-        String info = request.getParameter("infoStageDirector");
-        HttpSession httpSession = request.getSession();
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        String name = request.getParameter(PARAM_STAGE_DIRECTOR_NAME);
+        String dateOfBirthParam = request.getParameter(PARAM_DATE_OF_BIRTH);
+        String info = request.getParameter(PARAM_INFORMATION);
         if (checkName(name)) {
             StageDirector stageDirector = new StageDirector();
             stageDirector.setName(name);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date dateOfBirth = null;
-            try {
-                dateOfBirth = format.parse(dateOfBirthParam);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            stageDirector.setDateOfBirth(dateOfBirth);
             stageDirector.setInfo(info);
+            try {
+                Date dateOfBirth = new SimpleDateFormat(FORMAT_DATE).parse(dateOfBirthParam);
+                stageDirector.setDateOfBirth(dateOfBirth);
+            } catch (ParseException e) {
+                request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+                return configurationManager.getProperty(PATH_ERROR_PAGE);
+            }
             try {
                 stageDirectorService.create(stageDirector);
             } catch (ServiceException e) {
-                e.printStackTrace();
+                request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+                return configurationManager.getProperty(PATH_ERROR_PAGE);
             }
-            httpSession.removeAttribute("addError");
-            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&successfulAddParameters=" + ADD_PARAMETERS_SUCCESSFUL;
         } else {
-            httpSession.setAttribute("addError", "Такой элемент уже добавлен");
-            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&errorAddParameters=" + ADD_PARAMETERS_ERROR;
         }
     }
 
@@ -56,7 +63,7 @@ public class AddStageDirectorCommand implements ActionCommand {
         try {
             stageDirectors = this.stageDirectorService.findAll();
             for (StageDirector stageDirector : stageDirectors) {
-                if (stageDirector.getName().equals(name)) {
+                if (stageDirector.getName().equalsIgnoreCase(name)) {
                     check = false;
                 }
             }

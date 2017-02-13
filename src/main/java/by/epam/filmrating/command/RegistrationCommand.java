@@ -1,23 +1,24 @@
 package by.epam.filmrating.command;
 
-import by.epam.filmrating.entity.EnumStatus;
 import by.epam.filmrating.entity.User;
 import by.epam.filmrating.exception.ServiceException;
 import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.UserService;
+import by.epam.filmrating.util.RegistrationUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 public class RegistrationCommand implements ActionCommand {
-    private final static String PATH_INDEX_PAGE = "path.page.index";
-    private final static String PATH_LOGIN_PAGE = "path.page.login";
-    private final static String PARAM_NAME_LOGIN = "login";
-    private final static String PARAM_NAME_PASSWORD = "password";
-    private final static String PARAM_ERROR_REGISTRATION = "errorRegistration";
-
-    private final static String ERROR = "Такой пользователь уже существует";
+    private final static String PATH_ERROR_PAGE = "path.page.error";
+    private final static String PARAM_LOGIN = "login";
+    private final static String PARAM_PASSWORD = "password";
+    private final static String PARAM_MESSAGE_REGISTRATION = "messageRegistration";
+    private final static String ERROR_REGISTRATION = "error.registration";
+    private final static String ERROR_REGISTRATION_FILLING = "error.registration.filling";
+    private final static String SUCCESSFUL_REGISTRATION = "successful.registration";
+    private final static String PARAM_EXCEPTION = "exception";
+    private final static String SERVICE_ERROR = "error.service";
 
     private UserService userService;
 
@@ -27,42 +28,31 @@ public class RegistrationCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String login = request.getParameter(PARAM_NAME_LOGIN);
-        String password = request.getParameter(PARAM_NAME_PASSWORD);
         ConfigurationManager configurationManager = new ConfigurationManager();
-        if (checkLogin(login)) {
-            User user = new User();
-            user.setLogin(login);
-            user.setPassword(password);
-            try {
-                userService.create(user);
-                user = userService.findUserByLogin(login, password);
-            } catch (ServiceException e) {
-                e.printStackTrace();
-            }
-            HttpSession httpSession = request.getSession();
-            httpSession.setAttribute("user", user);
-            httpSession.setAttribute("status", EnumStatus.valueOf(user.getStatus()).getName());
-            return configurationManager.getProperty(PATH_INDEX_PAGE);
-        } else {
-            request.setAttribute(PARAM_ERROR_REGISTRATION, ERROR);
-            return configurationManager.getProperty(PATH_LOGIN_PAGE);
-        }
-    }
-
-    private boolean checkLogin(String login) {
-        List<User> users;
-        boolean check = true;
-        try {
-            users = this.userService.findAll();
-            for (User user : users) {
-                if (user.getLogin().equalsIgnoreCase(login)) {
-                    check = false;
+        RegistrationUtil registrationUtil = new RegistrationUtil();
+        String login = request.getParameter(PARAM_LOGIN);
+        String password = request.getParameter(PARAM_PASSWORD);
+        if (registrationUtil.checkLogin(login) && registrationUtil.checkPassword(password)) {
+            password = DigestUtils.shaHex(password);
+            if (registrationUtil.checkLogin(login, userService)) {
+                User user = new User();
+                user.setLogin(login);
+                user.setPassword(password);
+                try {
+                    userService.create(user);
+                } catch (ServiceException e) {
+                    request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+                    configurationManager.getProperty(PATH_ERROR_PAGE);
                 }
+                request.setAttribute(PARAM_MESSAGE_REGISTRATION, configurationManager.getProperty(SUCCESSFUL_REGISTRATION));
+                return "/controller?command=OPEN_LOGIN_PAGE";
+            } else {
+                request.setAttribute(PARAM_MESSAGE_REGISTRATION, configurationManager.getProperty(ERROR_REGISTRATION));
+                return "/controller?command=OPEN_LOGIN_PAGE";
             }
-        } catch (ServiceException e) {
-            e.printStackTrace();
+        } else {
+            request.setAttribute(PARAM_MESSAGE_REGISTRATION, configurationManager.getProperty(ERROR_REGISTRATION_FILLING));
+            return "/controller?command=OPEN_LOGIN_PAGE";
         }
-        return check;
     }
 }

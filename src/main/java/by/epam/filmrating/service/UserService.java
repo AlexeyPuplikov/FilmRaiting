@@ -92,12 +92,26 @@ public class UserService extends AbstractService<User> {
         }
     }
 
-    public User findUserByLogin(String login, String password) throws ServiceException {
+    public User findUserByLogin(String login) throws ServiceException {
         User user;
 
         try {
-            user = userDAO.findUserByLogin(login, password);
+            user = userDAO.findUserByLogin(login);
             LOG.info("Retrieving user by login: " + login);
+
+        } catch (DAOException ex) {
+            LOG.error("Error while retrieving user by login. ", ex);
+            throw new ServiceException(ex);
+        }
+        return user;
+    }
+
+    public User findUserByLoginAndPassword(String login, String password) throws ServiceException {
+        User user;
+
+        try {
+            user = userDAO.findUserByLoginAndPassword(login, password);
+            LOG.info("Retrieving user by login and password: " + login);
 
         } catch (DAOException ex) {
             LOG.error("Error while retrieving user by login. ", ex);

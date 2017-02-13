@@ -13,12 +13,20 @@
 </head>
 <body>
 <header>
-    <jsp:include page="header.jsp"/>
+    <div class="container">
+        <div class="change-language">
+            <a href="<c:url value="/controller?command=CHANGE_LANGUAGE&language=ru_RU"/>"><img
+                    src="<c:url value="/resources/images/lang-ru.png"/>"></a>
+            <a href="<c:url value="/controller?command=CHANGE_LANGUAGE&language=en_US"/>"><img
+                    src="<c:url value="/resources/images/lang-en.png"/>"></a>
+        </div>
+        <jsp:include page="header.jsp"/>
+    </div>
 </header>
 <main>
     <div class="container">
         <div class="row">
-            <form role="search" action="<c:url value="/controller"/>" method="post">
+            <form role="search" action="<c:url value="/controller"/>" method="get">
                 <input type="hidden" name="command" value="FIND_FILM">
                 <div class="input-group">
                     <input type="text" class="form-control" name="filmName"
@@ -29,7 +37,7 @@
     	    		    </button>
                     </span>
                 </div>
-                ${errorSearch}
+                <p>${errorSearch}</p>
             </form>
         </div>
     </div>

@@ -2,6 +2,7 @@ package by.epam.filmrating.command;
 
 import by.epam.filmrating.entity.Genre;
 import by.epam.filmrating.exception.ServiceException;
+import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.GenreService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,13 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public class AddGenreCommand implements ActionCommand {
+    private final static String PATH_ERROR_PAGE = "path.page.error";
+    private final static String PARAM_EXCEPTION = "exception";
+    private final static String SERVICE_ERROR = "error.service";
+    private final static String PARAM_GENRE_NAME = "genreName";
+    private final static String ADD_PARAMETERS_SUCCESSFUL = "successful";
+    private final static String ADD_PARAMETERS_ERROR = "error";
+
     private GenreService genreService;
 
     public AddGenreCommand() {
@@ -17,21 +25,20 @@ public class AddGenreCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String name = request.getParameter("genreName");
-        HttpSession httpSession = request.getSession();
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        String name = request.getParameter(PARAM_GENRE_NAME);
         if (checkName(name)) {
             Genre genre = new Genre();
             genre.setName(name);
             try {
                 genreService.create(genre);
             } catch (ServiceException e) {
-                e.printStackTrace();
+                request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+                return configurationManager.getProperty(PATH_ERROR_PAGE);
             }
-            httpSession.removeAttribute("addError");
-            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&successfulAddParameters=" + ADD_PARAMETERS_SUCCESSFUL;
         } else {
-            httpSession.setAttribute("addError", "Такой элемент уже добавлен");
-            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&errorAddParameters=" + ADD_PARAMETERS_ERROR;
         }
     }
 
@@ -41,7 +48,7 @@ public class AddGenreCommand implements ActionCommand {
         try {
             genres = this.genreService.findAll();
             for (Genre genre : genres) {
-                if (genre.getName().equals(name)) {
+                if (genre.getName().equalsIgnoreCase(name)) {
                     check = false;
                 }
             }

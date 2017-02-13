@@ -17,13 +17,18 @@ import java.util.List;
 
 public class ViewFilmCommand implements ActionCommand {
     private final static String PATH_FILM_PAGE = "path.page.film";
-    private final static String FILM_PARAM = "film";
-    private final static String FILM_RATING = "rating";
-    private final static String USER_MARK = "userMark";
-    private final static String COMMENT_USERS_PARAM = "commentUsers";
-    private final static String COMMENTS = "comments";
+    private final static String PATH_ERROR_PAGE = "path.page.error";
+    private final static String PARAM_FILM = "film";
+    private final static String PARAM_USER = "user";
+    private final static String PARAM_FILM_ID = "filmId";
+    private final static String PARAM_FILM_RATING = "rating";
+    private final static String PARAM_USER_MARK = "userMark";
+    private final static String PARAM_USERS_COMMENT = "commentUsers";
+    private final static String PARAM_COMMENTS = "comments";
     private static final String PARAM_LOCALE = "locale";
     private static final String PARAM_LANGUAGE = "language";
+    private final static String PARAM_EXCEPTION = "exception";
+    private final static String SERVICE_ERROR = "error.service";
 
     private FilmService filmService;
     private CommentService commentService;
@@ -37,22 +42,23 @@ public class ViewFilmCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
+        ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
         Film film = null;
         Double filmRating = null;
         User user = null;
         List<User> commentUsers = new ArrayList<>();
         List<Comment> comments = new ArrayList<>();
-        String filmId = request.getParameter("filmId");
-        if(session.getAttribute("user") != null) {
-            user = (User) session.getAttribute("user");
+        int filmId = Integer.parseInt(request.getParameter(PARAM_FILM_ID));
+        if(session.getAttribute(PARAM_USER) != null) {
+            user = (User) session.getAttribute(PARAM_USER);
         }
         Rating userMark = null;
         try {
-            film = filmService.findEntityBySign(Integer.parseInt(filmId));
-            filmRating = filmService.findFilmRating(Integer.parseInt(filmId));
+            film = filmService.findEntityBySign(filmId);
+            filmRating = filmService.findFilmRating(filmId);
             if (user != null) {
-                userMark = filmService.findUserMarkToFilm(user.getUserId(), Integer.parseInt(filmId));
+                userMark = filmService.findUserMarkToFilm(user.getUserId(), filmId);
             }
             comments = commentService.findEntitiesByFilm(film.getFilmId());
             if (comments != null) {
@@ -61,20 +67,18 @@ public class ViewFilmCommand implements ActionCommand {
                 }
             }
         } catch (ServiceException e) {
-            e.printStackTrace();
+            request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+            configurationManager.getProperty(PATH_ERROR_PAGE);
         }
-
 
         String currLocale = (String) session.getAttribute(PARAM_LANGUAGE);
         request.setAttribute(PARAM_LOCALE, currLocale);
+        request.setAttribute(PARAM_COMMENTS, comments);
+        request.setAttribute(PARAM_USERS_COMMENT, commentUsers);
+        request.setAttribute(PARAM_USER_MARK, userMark);
+        request.setAttribute(PARAM_FILM, film);
+        request.setAttribute(PARAM_FILM_RATING, filmRating);
 
-        request.setAttribute(COMMENTS, comments);
-        request.setAttribute(COMMENT_USERS_PARAM, commentUsers);
-        request.setAttribute(USER_MARK, userMark);
-        request.setAttribute(FILM_PARAM, film);
-        request.setAttribute(FILM_RATING, filmRating);
-
-        ConfigurationManager configurationManager = new ConfigurationManager();
         return configurationManager.getProperty(PATH_FILM_PAGE);
     }
 

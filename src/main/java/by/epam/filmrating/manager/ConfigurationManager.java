@@ -3,7 +3,7 @@ package by.epam.filmrating.manager;
 import java.util.ResourceBundle;
 
 public class ConfigurationManager {
-    private static final String PATH_CONFIG = "properties.config";
+    private static final String PATH_CONFIG = "properties.text";
 
     private ResourceBundle resourceBundle;
 

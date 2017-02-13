@@ -20,7 +20,8 @@
 <div class="top-content">
     <div class="inner-bg">
         <div class="container">
-            <a href="<c:url value="/controller?command=VIEW_FILMS&page=1&recordsPerPage=4"/>">На главную</a>
+            <a href="<c:url value="/controller?command=VIEW_FILMS&page=1&recordsPerPage=4"/>"><fmt:message
+                    key="label.toHome"/></a>
             <div class="row">
                 <div class="col-sm-5">
                     <div class="form-box">
@@ -35,17 +36,18 @@
                                 <input type="hidden" name="command" value="LOGIN">
                                 <div class="form-group">
                                     <label class="sr-only" for="form-username"><fmt:message key="label.login"/></label>
-                                    <input type="text" name="login" class="form-username form-control" placeholder="Логин..."
-                                           id="form-username"/>
+                                    <input type="text" name="login" class="form-username form-control"
+                                           placeholder="<fmt:message key="label.login"/>" id="form-username"/>
                                 </div>
                                 <div class="form-group">
                                     <label class="sr-only" for="form-password"><fmt:message
                                             key="label.password"/></label>
-                                    <input type="password" name="password" class="form-password form-control" placeholder="Пароль..."
-                                           id="form-password"/>
+                                    <input type="password" name="password" class="form-password form-control"
+                                           placeholder="<fmt:message
+                                            key="label.password"/>" id="form-password"/>
                                 </div>
                                 <button type="submit" class="btn"><fmt:message key="label.enter"/></button>
-                                <p>${errorLogin}</p>
+                                <p>${messageLogin}</p>
                             </form>
                         </div>
                     </div>
@@ -61,22 +63,22 @@
                             </div>
                         </div>
                         <div class="form-bottom">
-                            <form role="form" action="<c:url value="/controller"/>" method="post" class="registration-form">
+                            <form role="form" action="<c:url value="/controller"/>" method="post" class="login-form">
                                 <input type="hidden" name="command" value="REGISTRATION">
                                 <div class="form-group">
                                     <label class="sr-only" for="form-first-name"><fmt:message
                                             key="label.login"/></label>
-                                    <input type="text" name="login" class="form-first-name form-control" placeholder="Логин..."
-                                           id="form-first-name" pattern="^[a-zA-Z][a-zA-Z0-9-_]{4,16}$" title="латинские буквы, цифры, _, первый символ – латинская буква. Кол-во символов не менее 5">
+                                    <input type="text" name="login" class="form-first-name form-control"
+                                           placeholder="<fmt:message key="label.login"/>" id="form-first-name">
                                 </div>
                                 <div class="form-group">
                                     <label class="sr-only" for="form-password"><fmt:message
                                             key="label.password"/></label>
-                                    <input type="password" name="password" class="form-password form-control" placeholder="Пароль..."
-                                           id="form-password-registration" required="required" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,20}$" title="не менее 6 символов, не менее одной буквы в каждом регистре и не менее одной цифры"/>
+                                    <input type="password" name="password" class="form-password form-control"
+                                           placeholder="<fmt:message key="label.password"/>" id="form-password-registration"/>
                                 </div>
                                 <button type="submit" class="btn"><fmt:message key="label.registration"/></button>
-                                <p>${errorRegistration}</p>
+                                <p>${messageRegistration}</p>
                             </form>
                         </div>
                     </div>
@@ -85,8 +87,6 @@
         </div>
     </div>
 </div>
-<footer>
-    <p>Copyright © by Alexey Puplikov</p>
-</footer>
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

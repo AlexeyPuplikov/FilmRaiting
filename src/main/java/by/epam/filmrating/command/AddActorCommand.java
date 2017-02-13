@@ -1,19 +1,27 @@
 package by.epam.filmrating.command;
 
-import by.epam.filmrating.command.ActionCommand;
 import by.epam.filmrating.entity.Actor;
 import by.epam.filmrating.exception.ServiceException;
 import by.epam.filmrating.manager.ConfigurationManager;
 import by.epam.filmrating.service.ActorService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class AddActorCommand implements ActionCommand {
+    private final static String PATH_ERROR_PAGE = "path.page.error";
+    private final static String PARAM_EXCEPTION = "exception";
+    private final static String SERVICE_ERROR = "error.service";
+    private final static String FORMAT_DATE = "yyyy-MM-dd";
+    private final static String PARAM_ACTOR_NAME = "actorName";
+    private final static String PARAM_DATE_OF_BIRTH = "actorDateOfBirth";
+    private final static String PARAM_INFORMATION = "infoActor";
+    private final static String ADD_PARAMETERS_SUCCESSFUL = "successful";
+    private final static String ADD_PARAMETERS_ERROR = "error";
+
     private ActorService actorService;
 
     public AddActorCommand() {
@@ -22,32 +30,30 @@ public class AddActorCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String name = request.getParameter("actorName");
-        String dateOfBirthParam = request.getParameter("actorDateOfBirth");
-        String info = request.getParameter("infoActor");
-        HttpSession httpSession = request.getSession();
-        if(checkName(name)) {
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        String name = request.getParameter(PARAM_ACTOR_NAME);
+        String dateOfBirthParam = request.getParameter(PARAM_DATE_OF_BIRTH);
+        String info = request.getParameter(PARAM_INFORMATION);
+        if (checkName(name)) {
             Actor actor = new Actor();
             actor.setName(name);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date dateOfBirth = null;
-            try {
-                dateOfBirth = format.parse(dateOfBirthParam);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            actor.setDateOfBirth(dateOfBirth);
             actor.setInfo(info);
+            try {
+                Date dateOfBirth = new SimpleDateFormat(FORMAT_DATE).parse(dateOfBirthParam);
+                actor.setDateOfBirth(dateOfBirth);
+            } catch (ParseException e) {
+                request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+                return configurationManager.getProperty(PATH_ERROR_PAGE);
+            }
             try {
                 actorService.create(actor);
             } catch (ServiceException e) {
-                e.printStackTrace();
+                request.setAttribute(PARAM_EXCEPTION, e);
+                return configurationManager.getProperty(PATH_ERROR_PAGE);
             }
-            httpSession.removeAttribute("addError");
-            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&successfulAddParameters=" + ADD_PARAMETERS_SUCCESSFUL;
         } else {
-            httpSession.setAttribute("addError", "Такой элемент уже добавлен");
-            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE";
+            return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&errorAddParameters=" + ADD_PARAMETERS_ERROR;
         }
     }
 
@@ -57,7 +63,7 @@ public class AddActorCommand implements ActionCommand {
         try {
             actors = this.actorService.findAll();
             for (Actor actor : actors) {
-                if (actor.getName().equals(name)) {
+                if (actor.getName().equalsIgnoreCase(name)) {
                     check = false;
                 }
             }

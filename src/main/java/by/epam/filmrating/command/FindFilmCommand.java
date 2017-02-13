@@ -8,10 +8,11 @@ import by.epam.filmrating.service.FilmService;
 import javax.servlet.http.HttpServletRequest;
 
 public class FindFilmCommand implements ActionCommand {
-    private final static String PATH_MAIN_USER_PAGE = "path.page.index";
+    private final static String PATH_ERROR_PAGE = "path.page.error";
     private final static String PARAM_ERROR_SEARCH = "errorSearch";
-
-    private final static String ERROR = "Фильм не найден";
+    private final static String ERROR_SEARCH = "error.search";
+    private final static String PARAM_EXCEPTION = "exception";
+    private final static String SERVICE_ERROR = "error.service";
 
     private FilmService filmService;
 
@@ -27,14 +28,14 @@ public class FindFilmCommand implements ActionCommand {
         try {
             film = filmService.findEntityBySign(name);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+            configurationManager.getProperty(PATH_ERROR_PAGE);
         }
-
         if (film != null && film.getFilmId() != 0) {
-            return "redirect:/controller?command=VIEW_FILM&filmId=" + film.getFilmId();
+            return "/controller?command=VIEW_FILM&filmId=" + film.getFilmId();
         } else {
-            request.setAttribute(PARAM_ERROR_SEARCH, ERROR);
-            return configurationManager.getProperty(PATH_MAIN_USER_PAGE);
+            request.setAttribute(PARAM_ERROR_SEARCH, configurationManager.getProperty(ERROR_SEARCH));
+            return "/controller?command=VIEW_FILMS&page=1&recordsPerPage=4";
         }
     }
 }

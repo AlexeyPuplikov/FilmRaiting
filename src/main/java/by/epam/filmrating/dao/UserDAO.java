@@ -16,8 +16,9 @@ import java.util.List;
 public class UserDAO extends AbstractDAO<User> {
     private final static String SELECT_USER = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE, IS_BLOCKED FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID GROUP BY U.USER_ID";
     private final static String SELECT_USER_BY_ID = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE, IS_BLOCKED FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID WHERE U.USER_ID = ?";
-    private final static String SELECT_USER_BY_LOGIN = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE, IS_BLOCKED FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID WHERE U.LOGIN = ? AND U.PASSWORD = SHA(?)";
-    private final static String INSERT_USER = "INSERT INTO USER(LOGIN, PASSWORD, STATUS_ID, ROLE_ID) VALUES(?,SHA(?),?,?)";
+    private final static String SELECT_USER_BY_LOGIN = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE, IS_BLOCKED FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID WHERE U.LOGIN = ?";
+    private final static String SELECT_USER_BY_LOGIN_AND_PASSWORD = "SELECT U.USER_ID, U.LOGIN, U.PASSWORD, S.NAME AS STATUS, R.NAME AS ROLE, IS_BLOCKED FROM USER U INNER JOIN RATING.STATUS S ON S.STATUS_ID = U.STATUS_ID INNER JOIN RATING.ROLE R ON R.ROLE_ID = U.ROLE_ID WHERE U.LOGIN = ? AND U.PASSWORD = ?";
+    private final static String INSERT_USER = "INSERT INTO USER(LOGIN, PASSWORD, STATUS_ID, ROLE_ID) VALUES(?,?,?,?)";
     private final static String UPDATE_STATUS = "UPDATE USER SET STATUS_ID = ? WHERE USER_ID = ?";
     private final static String UPDATE_IS_BLOCKED = "UPDATE USER SET IS_BLOCKED = ? WHERE USER_ID = ?";
 
@@ -126,10 +127,28 @@ public class UserDAO extends AbstractDAO<User> {
         }
     }
 
-    public User findUserByLogin(String login, String password) throws DAOException {
+    public User findUserByLogin(String login) throws DAOException {
         Connection connection = connectionPool.getConnection();
         User user = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_USER_BY_LOGIN, connection)) {
+            preparedStatement.setString(1, login);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    user = new User(resultSet.getInt(USER_ID), resultSet.getString(LOGIN), resultSet.getString(PASSWORD), resultSet.getString(STATUS), EnumRole.valueOf(resultSet.getString(ROLE)).name(), resultSet.getBoolean(IS_BLOCKED));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DAOException("Error while executing findUserByLogin method.", ex);
+        } finally {
+            this.closeConnection(connection);
+        }
+        return user;
+    }
+
+    public User findUserByLoginAndPassword(String login, String password) throws DAOException {
+        Connection connection = connectionPool.getConnection();
+        User user = null;
+        try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_USER_BY_LOGIN_AND_PASSWORD, connection)) {
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, password);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -138,7 +157,7 @@ public class UserDAO extends AbstractDAO<User> {
                 }
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findUserByLogin method.", ex);
+            throw new DAOException("Error while executing findUserByLoginAndPassword method.", ex);
         } finally {
             this.closeConnection(connection);
         }

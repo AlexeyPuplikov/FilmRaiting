@@ -9,11 +9,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public class UploadFileCommand implements ActionCommand {
-    private final static String PATH_PAGE_MAIN_ADMIN = "path.page.admin";
+    private final static String PATH_ERROR_PAGE = "path.page.error";
+    private final static String PARAM_EXCEPTION = "exception";
+    private final static String SERVICE_ERROR = "error.service";
+    private final static String PARAM_IMAGE = "image";
+    private final static String PARAM_FILM_NAME = "filmName";
+    private final static String IMAGE_FORMAT = "jpg";
+    private final static String ADD_COVER_SUCCESSFUL= "successful";
 
     private FilmService filmService;
 
@@ -25,29 +34,33 @@ public class UploadFileCommand implements ActionCommand {
     public String execute(HttpServletRequest request) {
         ConfigurationManager configurationManager = new ConfigurationManager();
         InputStream inputStream = null;
-        Part filePart;
+        ByteArrayOutputStream byteArrayOutputStream = null;
         try {
-            filePart = request.getPart("image");
+            Part filePart = request.getPart(PARAM_IMAGE);
             if (filePart != null) {
                 inputStream = filePart.getInputStream();
                 BufferedImage image = ImageIO.read(inputStream);
                 image = image.getSubimage(0, 0, 350, 500);
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                ImageIO.write(image, "jpg", byteArrayOutputStream);
+                byteArrayOutputStream = new ByteArrayOutputStream();
+                ImageIO.write(image, IMAGE_FORMAT, byteArrayOutputStream);
                 inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-                filmService.addCoverToFilm(inputStream, filmService.findEntityBySign(request.getParameter("filmName")));
+                filmService.addCoverToFilm(inputStream, filmService.findEntityBySign(request.getParameter(PARAM_FILM_NAME)));
             }
         } catch (IOException | ServiceException | ServletException e) {
-            e.printStackTrace();
+            request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+            return configurationManager.getProperty(PATH_ERROR_PAGE);
         } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                if (byteArrayOutputStream != null) {
+                    byteArrayOutputStream.close();
                 }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        return configurationManager.getProperty(PATH_PAGE_MAIN_ADMIN);
+        return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&successfulAddCover=" + ADD_COVER_SUCCESSFUL;
     }
 }

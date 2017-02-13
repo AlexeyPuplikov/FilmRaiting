@@ -9,8 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public class OpenMainAdminPageCommand implements ActionCommand {
+    private final static String PATH_ERROR_PAGE = "path.page.error";
     private final static String PARAM_FILMS = "films";
     private final static String PATH_ADMIN_PAGE = "path.page.admin";
+    private final static String PARAM_EXCEPTION = "exception";
+    private final static String SERVICE_ERROR = "error.service";
+    private final static String PARAM_LOCALE = "locale";
+    private final static String PARAM_LANGUAGE = "language";
 
     private FilmService filmService;
 
@@ -20,17 +25,18 @@ public class OpenMainAdminPageCommand implements ActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
+        ConfigurationManager configurationManager = new ConfigurationManager();
         List<Film> films = null;
         try {
             films = filmService.findAll();
         } catch (ServiceException e) {
-            e.printStackTrace();
+            request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
+            configurationManager.getProperty(PATH_ERROR_PAGE);
         }
+
+        String currLocale = (String) request.getSession().getAttribute(PARAM_LANGUAGE);
+        request.setAttribute(PARAM_LOCALE, currLocale);
         request.setAttribute(PARAM_FILMS, films);
-        ConfigurationManager configurationManager = new ConfigurationManager();
-        if (request.getSession().getAttribute("admin") != null) {
-            return configurationManager.getProperty(PATH_ADMIN_PAGE);
-        }
-        return configurationManager.getProperty("path.page.login");
+        return configurationManager.getProperty(PATH_ADMIN_PAGE);
     }
 }
