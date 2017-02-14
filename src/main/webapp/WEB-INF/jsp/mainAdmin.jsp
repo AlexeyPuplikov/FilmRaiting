@@ -39,6 +39,7 @@
 <main>
     <div class="container">
         <div class="row">
+            ${message}
             <c:forEach items="${films}" var="film">
                 <form class="form" action="<c:url value="/controller"/>" method="post">
                     <input type="hidden" name="command" value="DELETE_FILM">

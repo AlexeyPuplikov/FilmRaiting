@@ -49,7 +49,7 @@ public class ActorService extends AbstractService<Actor> {
 
         try {
             actor = actorDAO.findEntityBySign(name);
-            LOG.info("Retrieving actor by name: " + actor.getName());
+            LOG.info("Retrieving actor by name: ");
 
         } catch (DAOException ex) {
             LOG.error("Error while retrieving actor by name.");

@@ -11,6 +11,7 @@ public class DeleteFilmCommand implements ActionCommand {
     private final static String PARAM_FILM_ID = "film";
     private final static String PARAM_EXCEPTION = "exception";
     private final static String SERVICE_ERROR = "error.service";
+    private final static String ADD_PARAMETERS_SUCCESSFUL = "successfulDelete";
 
     private FilmService filmService;
 
@@ -28,6 +29,6 @@ public class DeleteFilmCommand implements ActionCommand {
             request.setAttribute(PARAM_EXCEPTION, SERVICE_ERROR);
             configurationManager.getProperty(PATH_ERROR_PAGE);
         }
-        return "redirect:/controller?command=OPEN_MAIN_ADMIN_PAGE";
+        return "redirect:/controller?command=OPEN_MAIN_ADMIN_PAGE&successfulDelete=" + ADD_PARAMETERS_SUCCESSFUL;
     }
 }

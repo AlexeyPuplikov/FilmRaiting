@@ -44,41 +44,37 @@ public class ViewFilmCommand implements ActionCommand {
     public String execute(HttpServletRequest request) {
         ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
-        Film film = null;
-        Double filmRating = null;
         User user = null;
-        List<User> commentUsers = new ArrayList<>();
-        List<Comment> comments = new ArrayList<>();
         int filmId = Integer.parseInt(request.getParameter(PARAM_FILM_ID));
         if(session.getAttribute(PARAM_USER) != null) {
             user = (User) session.getAttribute(PARAM_USER);
         }
         Rating userMark = null;
         try {
-            film = filmService.findEntityBySign(filmId);
-            filmRating = filmService.findFilmRating(filmId);
+            Film film = filmService.findEntityBySign(filmId);
+            Double filmRating = filmService.findFilmRating(filmId);
             if (user != null) {
                 userMark = filmService.findUserMarkToFilm(user.getUserId(), filmId);
             }
-            comments = commentService.findEntitiesByFilm(film.getFilmId());
+            List<Comment> comments = commentService.findEntitiesByFilm(film.getFilmId());
+            List<User> commentUsers = new ArrayList<>();
             if (comments != null) {
                 for (Comment comment : comments) {
                     commentUsers.add(userService.findEntityBySign(comment.getUserId()));
                 }
             }
+            request.setAttribute(PARAM_USERS_COMMENT, commentUsers);
+            request.setAttribute(PARAM_COMMENTS, comments);
+            request.setAttribute(PARAM_FILM, film);
+            request.setAttribute(PARAM_FILM_RATING, filmRating);
         } catch (ServiceException e) {
             request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
-            configurationManager.getProperty(PATH_ERROR_PAGE);
+            return configurationManager.getProperty(PATH_ERROR_PAGE);
         }
 
         String currLocale = (String) session.getAttribute(PARAM_LANGUAGE);
         request.setAttribute(PARAM_LOCALE, currLocale);
-        request.setAttribute(PARAM_COMMENTS, comments);
-        request.setAttribute(PARAM_USERS_COMMENT, commentUsers);
         request.setAttribute(PARAM_USER_MARK, userMark);
-        request.setAttribute(PARAM_FILM, film);
-        request.setAttribute(PARAM_FILM_RATING, filmRating);
-
         return configurationManager.getProperty(PATH_FILM_PAGE);
     }
 

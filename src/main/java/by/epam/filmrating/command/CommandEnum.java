@@ -11,6 +11,11 @@ public enum CommandEnum {
             this.command = new ViewFilmCommand();
         }
     },
+    VIEW_PERSON {
+        {
+            this.command = new ViewPersonCommand();
+        }
+    },
     ADD_COMMENT {
         {
             this.command = new AddCommentCommand();

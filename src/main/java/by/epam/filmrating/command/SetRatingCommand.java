@@ -16,6 +16,7 @@ import java.util.List;
 public class SetRatingCommand implements ActionCommand {
     private final static String PATH_ERROR_PAGE = "path.page.error";
     private final static String PARAM_USER = "user";
+    private final static String PARAM_STATUS = "status";
     private final static String PARAM_FILM_ID = "filmId";
     private final static String PARAM_MARK = "mark";
     private final static String PARAM_EXCEPTION = "exception";
@@ -43,10 +44,10 @@ public class SetRatingCommand implements ActionCommand {
         try {
             filmService.setFilmRating(rating);
             if (this.updateStatus(filmId, mark, currentUser)) {
-                httpSession.removeAttribute("user");
-                httpSession.setAttribute("user", userService.findEntityBySign(currentUser.getUserId()));
-                httpSession.removeAttribute("status");
-                httpSession.setAttribute("status", EnumStatus.valueOf(userService.findEntityBySign(currentUser.getUserId()).getStatus()).getName());
+                httpSession.removeAttribute(PARAM_USER);
+                httpSession.setAttribute(PARAM_USER, userService.findEntityBySign(currentUser.getUserId()));
+                httpSession.removeAttribute(PARAM_STATUS);
+                httpSession.setAttribute(PARAM_STATUS, EnumStatus.valueOf(userService.findEntityBySign(currentUser.getUserId()).getStatus()).getName());
             }
         } catch (ServiceException e) {
             request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
