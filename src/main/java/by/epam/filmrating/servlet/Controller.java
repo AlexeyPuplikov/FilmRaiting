@@ -1,6 +1,6 @@
 package by.epam.filmrating.servlet;
 
-import by.epam.filmrating.command.ActionCommand;
+import by.epam.filmrating.command.common.IActionCommand;
 import by.epam.filmrating.factory.ActionFactory;
 
 import javax.servlet.RequestDispatcher;
@@ -26,7 +26,7 @@ public class Controller extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ActionCommand command = ActionFactory.defineCommand(req);
+        IActionCommand command = ActionFactory.defineCommand(req);
         String page = command.execute(req);
         if (page.startsWith("redirect")){
             page = page.replace("redirect:", "");

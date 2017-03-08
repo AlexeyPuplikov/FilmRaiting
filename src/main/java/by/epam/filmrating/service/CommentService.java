@@ -16,17 +16,17 @@ public class CommentService extends AbstractService<Comment> {
 
     @Override
     public List<Comment> findAll() throws ServiceException {
-        return null;
+        throw new ServiceException("This method is not implemented.");
     }
 
     @Override
     public Comment findEntityBySign(int id) throws ServiceException {
-        return null;
+        throw new ServiceException("This method is not implemented.");
     }
 
     @Override
     public Comment findEntityBySign(String name) throws ServiceException {
-        return null;
+        throw new ServiceException("This method is not implemented.");
     }
 
     @Override
@@ -44,11 +44,11 @@ public class CommentService extends AbstractService<Comment> {
     @Override
     public boolean create(Comment entity) throws ServiceException {
         try {
-            LOG.info("Creating comment");
+            LOG.info("Creating comment.");
             return commentDAO.create(entity);
 
         } catch (DAOException ex) {
-            LOG.error("Error while creating comment", ex);
+            LOG.error("Error while creating comment.", ex);
             throw new ServiceException(ex);
         }
     }
@@ -60,7 +60,7 @@ public class CommentService extends AbstractService<Comment> {
             return commentDAO.findEntitiesByFilm(id);
 
         } catch (DAOException ex) {
-            LOG.error("Error while retrieving comment by film id", ex);
+            LOG.error("Error while retrieving comment by film id.", ex);
             throw new ServiceException(ex);
         }
     }

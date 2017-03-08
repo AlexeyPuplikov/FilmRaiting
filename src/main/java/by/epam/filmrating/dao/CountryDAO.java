@@ -59,7 +59,7 @@ public class CountryDAO extends AbstractDAO<Country> {
             }
             return country;
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findCountryBySign method.", ex);
+            throw new DAOException("Error while executing findCountryById method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -78,7 +78,7 @@ public class CountryDAO extends AbstractDAO<Country> {
             }
             return country;
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findCountryBySign method.", ex);
+            throw new DAOException("Error while executing findCountryByName method.", ex);
         } finally {
             this.closeConnection(connection);
         }

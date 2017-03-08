@@ -5,6 +5,6 @@
     <title>index</title>
 </head>
 <body>
-<c:redirect url="/controller?command=VIEW_FILMS&page=1&recordsPerPage=4"/>
+<c:redirect url="/controller?command=VIEW_FILMS&page=1"/>
 </body>
 </html>

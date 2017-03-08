@@ -38,7 +38,6 @@ public class FilmDAO extends AbstractDAO<Film> {
     private final static String SELECT_FILM_BY_COUNTRY = "SELECT F.FILM_ID, F.NAME, YEAR, COUNTRY, DESCRIPTION, PREMIERE, TIME FROM FILM F "
             + "JOIN FILM_HAS_COUNTRY FHC ON FHC.FILM_ID = F.FILM_ID AND COUNTRY_ID = ?";
     private final static String SELECT_LIMIT_FILMS = "SELECT FILM_ID, STAGE_DIRECTOR_ID, NAME, YEAR, DESCRIPTION, PREMIERE, TIME, BUDGET, COVER FROM FILM LIMIT ?,?";
-
     private final static String SELECT_FILM_RATING = "SELECT AVG(MARK) AS RATING FROM RATING WHERE FILM_ID = ?";
     private final static String SET_RATING = "CALL SET_RATING(?,?,?)";
     private final static String SELECT_USER_MARK = "SELECT RATING_ID, USER_ID, FILM_ID, MARK FROM RATING WHERE USER_ID = ? AND FILM_ID = ?";
@@ -81,7 +80,7 @@ public class FilmDAO extends AbstractDAO<Film> {
     @Override
     public Film findEntityBySign(int id) throws DAOException {
         Connection connection = connectionPool.getConnection();
-        Film film = new Film();
+        Film film = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_BY_ID, connection)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -100,7 +99,7 @@ public class FilmDAO extends AbstractDAO<Film> {
     @Override
     public Film findEntityBySign(String name) throws DAOException {
         Connection connection = connectionPool.getConnection();
-        Film film = new Film();
+        Film film = null;
         try (PreparedStatement preparedStatement = connectionPool.getPreparedStatement(SELECT_FILM_BY_NAME, connection)) {
             preparedStatement.setString(1, name);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -143,7 +142,7 @@ public class FilmDAO extends AbstractDAO<Film> {
 
     @Override
     public List<Film> findEntitiesByFilm(int filmId) throws DAOException {
-        return null;
+        throw new DAOException("This method is not implemented.");
     }
 
     public boolean addActorsToFilm(Film film, Actor actor) throws DAOException {

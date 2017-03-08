@@ -28,7 +28,7 @@ public class ActorDAO extends AbstractDAO<Actor> {
     private final static String INFO = "INFO";
 
     public ActorDAO() {
-        this.connectionPool = DBConnectionPool.getInstance();
+        connectionPool = DBConnectionPool.getInstance();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ActorDAO extends AbstractDAO<Actor> {
                 }
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findActorBySign method", ex);
+            throw new DAOException("Error while executing findActorById method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -80,7 +80,7 @@ public class ActorDAO extends AbstractDAO<Actor> {
                 }
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findEntityBySign method", ex);
+            throw new DAOException("Error while executing findActorByName method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -102,7 +102,7 @@ public class ActorDAO extends AbstractDAO<Actor> {
             preparedStatement.setString(4, actor.getInfo());
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing create actor method", ex);
+            throw new DAOException("Error while executing create actor method.", ex);
         } finally {
             this.closeConnection(connection);
         }
@@ -129,7 +129,7 @@ public class ActorDAO extends AbstractDAO<Actor> {
                 }
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while executing findActorsByFilmHandler method", ex);
+            throw new DAOException("Error while executing findActorsByFilmHandler method.", ex);
         } finally {
             this.closeConnection(connection);
         }

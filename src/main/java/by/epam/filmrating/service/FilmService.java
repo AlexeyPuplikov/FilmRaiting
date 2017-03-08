@@ -36,7 +36,7 @@ public class FilmService extends AbstractService<Film> {
 
         try {
             film = filmDAO.findEntityBySign(id);
-            LOG.info("Retrieving film by id: " + film.getFilmId());
+            LOG.info("Retrieving film by id");
 
         } catch (DAOException ex) {
             LOG.error("Error while retrieving actor by id.");
@@ -51,7 +51,7 @@ public class FilmService extends AbstractService<Film> {
 
         try {
             film = filmDAO.findEntityBySign(name);
-            LOG.info("Retrieving film by name: " + film.getFilmId());
+            LOG.info("Retrieving film by name.");
         } catch (DAOException ex) {
             LOG.error("Error while retrieving film by name.");
             throw new ServiceException(ex);
@@ -211,7 +211,7 @@ public class FilmService extends AbstractService<Film> {
 
     public Rating findUserMarkToFilm(int userId, int filmId) throws ServiceException {
         try {
-            LOG.info("Retrieving user mark to film: " + userId);
+            LOG.info("Retrieving user mark to film.");
             return filmDAO.findUserMarkToFilm(userId, filmId);
 
         } catch (DAOException ex) {
@@ -222,7 +222,7 @@ public class FilmService extends AbstractService<Film> {
 
     public List<Film> findLimitFilms(int offset, int recordNumber) throws ServiceException {
         try {
-            LOG.info("Retrieving offset films");
+            LOG.info("Retrieving offset films.");
             return filmDAO.findLimitFilms(offset, recordNumber);
 
         } catch (DAOException ex) {

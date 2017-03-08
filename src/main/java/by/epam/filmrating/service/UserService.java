@@ -37,7 +37,7 @@ public class UserService extends AbstractService<User> {
             LOG.info("Retrieving user by id: " + id);
 
         } catch (DAOException ex) {
-            LOG.error("Error while retrieving user by id. ", ex);
+            LOG.error("Error while retrieving user by id.", ex);
             throw new ServiceException(ex);
         }
         return user;
@@ -45,18 +45,18 @@ public class UserService extends AbstractService<User> {
 
     @Override
     public User findEntityBySign(String name) throws ServiceException {
-        return null;
+        throw new ServiceException("This method is not implemented");
     }
 
     @Override
     public boolean delete(int id) throws ServiceException {
-        return false;
+        throw new ServiceException("This method is not implemented");
     }
 
     @Override
     public boolean create(User entity) throws ServiceException {
         try {
-            LOG.info("creating user");
+            LOG.info("Creating user.");
             return userDAO.create(entity);
 
         } catch (DAOException ex) {

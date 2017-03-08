@@ -4,7 +4,11 @@ import by.epam.filmrating.connection.DBConnectionPool;
 import by.epam.filmrating.entity.Comment;
 import by.epam.filmrating.exception.DAOException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -71,16 +75,16 @@ public class CommentDAO extends AbstractDAO<Comment> {
 
     @Override
     public List<Comment> findAll() throws DAOException {
-        return null;
+        throw new DAOException("This method is not implemented.");
     }
 
     @Override
     public Comment findEntityBySign(int id) throws DAOException {
-        return null;
+        throw new DAOException("This method is not implemented.");
     }
 
     @Override
     public Comment findEntityBySign(String name) throws DAOException {
-        return null;
+        throw new DAOException("This method is not implemented.");
     }
 }

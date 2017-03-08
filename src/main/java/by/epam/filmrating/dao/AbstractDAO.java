@@ -29,7 +29,7 @@ public abstract class AbstractDAO<T extends Entity> {
             preparedStatement.setInt(1, id);
             return preparedStatement.execute();
         } catch (SQLException ex) {
-            throw new DAOException("Error while delete data", ex);
+            throw new DAOException("Error while delete data.", ex);
         } finally {
             this.closeConnection(connection);
         }

@@ -107,7 +107,7 @@ public class StageDirectorDAO extends AbstractDAO<StageDirector> {
 
     @Override
     public List<StageDirector> findEntitiesByFilm(int id) throws DAOException {
-        return null;
+        throw new DAOException("This method is not implemented.");
     }
 
     public StageDirector findEntityByFilm(int filmId) throws DAOException {

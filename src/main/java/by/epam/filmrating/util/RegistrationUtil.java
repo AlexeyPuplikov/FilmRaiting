@@ -10,11 +10,11 @@ public class RegistrationUtil {
     private final static String PATTERN_LOGIN = "[A-z0-9]{5,15}";
     private final static String PATTERN_PASSWORD = "[A-z0-9]{5,}";
 
-    public boolean checkLogin(String login) {
+    public static boolean checkLogin(String login) {
         return !login.isEmpty() && login.matches(PATTERN_LOGIN);
     }
 
-    public boolean checkLogin(String login, UserService userService) {
+    public static boolean checkLogin(String login, UserService userService) {
         List<User> users;
         boolean check = true;
         try {
@@ -30,7 +30,7 @@ public class RegistrationUtil {
         return check;
     }
 
-    public boolean checkPassword(String password) {
+    public static boolean checkPassword(String password) {
         return !password.isEmpty() && password.matches(PATTERN_PASSWORD);
     }
 

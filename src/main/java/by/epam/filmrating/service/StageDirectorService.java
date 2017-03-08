@@ -56,11 +56,11 @@ public class StageDirectorService extends AbstractService<StageDirector> {
     @Override
     public boolean delete(int id) throws ServiceException {
         try {
-            LOG.info("Deleting stage director by id");
+            LOG.info("Deleting stage director by id.");
             return stageDirectorDAO.delete(id);
 
         } catch (DAOException ex) {
-            LOG.error("Error while deleting stage director by id", ex);
+            LOG.error("Error while deleting stage director by id.", ex);
             throw new ServiceException(ex);
         }
     }
@@ -68,11 +68,11 @@ public class StageDirectorService extends AbstractService<StageDirector> {
     @Override
     public boolean create(StageDirector entity) throws ServiceException {
         try {
-            LOG.info("Creating stage director");
+            LOG.info("Creating stage director.");
             return stageDirectorDAO.create(entity);
 
         } catch (DAOException ex) {
-            LOG.error("Error while creating stage director", ex);
+            LOG.error("Error while creating stage director.", ex);
             throw new ServiceException(ex);
         }
     }
@@ -90,7 +90,7 @@ public class StageDirectorService extends AbstractService<StageDirector> {
             LOG.info("Retrieving stage director by film: " + id);
 
         } catch (DAOException ex) {
-            LOG.error("Error while retrieving stage director", ex);
+            LOG.error("Error while retrieving stage director.", ex);
             throw new ServiceException(ex);
         }
         return stageDirector;

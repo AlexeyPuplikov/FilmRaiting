@@ -31,7 +31,6 @@ public class ActorService extends AbstractService<Actor> {
     @Override
     public Actor findEntityBySign(int id) throws ServiceException {
         Actor actor;
-
         try {
             actor = actorDAO.findEntityBySign(id);
             LOG.info("Retrieving actor by id: " + actor.getActorId());
@@ -46,10 +45,9 @@ public class ActorService extends AbstractService<Actor> {
     @Override
     public Actor findEntityBySign(String name) throws ServiceException {
         Actor actor;
-
         try {
             actor = actorDAO.findEntityBySign(name);
-            LOG.info("Retrieving actor by name: ");
+            LOG.info("Retrieving actor by name");
 
         } catch (DAOException ex) {
             LOG.error("Error while retrieving actor by name.");
@@ -73,7 +71,7 @@ public class ActorService extends AbstractService<Actor> {
     @Override
     public boolean create(Actor entity) throws ServiceException {
         try {
-            LOG.info("Creating actor");
+            LOG.info("Creating actor.");
             return actorDAO.create(entity);
 
         } catch (DAOException ex) {
@@ -85,7 +83,6 @@ public class ActorService extends AbstractService<Actor> {
     @Override
     public List<Actor> findEntitiesByFilm(int id) throws ServiceException {
         List<Actor> actors;
-
         try {
             actors = actorDAO.findEntitiesByFilm(id);
             LOG.info("Retrieving actors by film id: " + id);
@@ -99,10 +96,9 @@ public class ActorService extends AbstractService<Actor> {
 
     public List<Actor> findEntitiesNotInFilm(int id) throws ServiceException {
         List<Actor> actors;
-
         try {
             actors = actorDAO.findEntitiesNotInFilm(id);
-            LOG.info("Retrieving actors not in film" + id);
+            LOG.info("Retrieving actors not in film. Film id:" + id);
 
         } catch (DAOException ex) {
             LOG.error("Error while retrieving actors not in film.");

@@ -72,7 +72,7 @@ public class UserDAO extends AbstractDAO<User> {
 
     @Override
     public User findEntityBySign(String name) throws DAOException {
-        return null;
+        throw new DAOException("This method is not implemented.");
     }
 
     @Override
@@ -93,12 +93,12 @@ public class UserDAO extends AbstractDAO<User> {
 
     @Override
     public boolean delete(int id) throws DAOException {
-        return false;
+        throw new DAOException("This method is not implemented.");
     }
 
     @Override
     public List<User> findEntitiesByFilm(int filmId) throws DAOException {
-        return null;
+        throw new DAOException("This method is not implemented.");
     }
 
     public boolean updateStatus(int userId, int statusId) throws DAOException {

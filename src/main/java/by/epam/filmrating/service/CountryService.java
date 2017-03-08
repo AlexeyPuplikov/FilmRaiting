@@ -17,7 +17,6 @@ public class CountryService extends AbstractService<Country> {
     @Override
     public List<Country> findAll() throws ServiceException {
         List<Country> countries;
-
         try {
             countries = countryDAO.findAll();
             LOG.info("Retrieving country list: " + countries.size());
@@ -74,7 +73,7 @@ public class CountryService extends AbstractService<Country> {
     @Override
     public boolean create(Country entity) throws ServiceException {
         try {
-            LOG.info("creating country");
+            LOG.info("Creating country.");
             return countryDAO.create(entity);
 
         } catch (DAOException ex) {

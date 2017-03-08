@@ -1,6 +1,7 @@
+/*
 package test.by.epam.filmrating;
 
-import by.epam.filmrating.command.SetRatingCommand;
+import by.epam.filmrating.command.client.SetRatingCommand;
 import by.epam.filmrating.entity.User;
 import by.epam.filmrating.exception.ServiceException;
 import org.junit.Assert;
@@ -18,7 +19,7 @@ public class ActionTest {
         user.setStatus("NEW");
     }
 
-    /*@Test
+    @Test
     public void ChangeStatus() throws ServiceException {
         boolean check = setRatingCommand.updateStatus(8, 5, user);
         Assert.assertFalse(check);
@@ -28,6 +29,7 @@ public class ActionTest {
     public void ChangeStatus1() throws ServiceException {
         boolean check = setRatingCommand.updateStatus(2, 5, user);
         Assert.assertTrue(check);
-    }*/
+    }
 
 }
+*/
