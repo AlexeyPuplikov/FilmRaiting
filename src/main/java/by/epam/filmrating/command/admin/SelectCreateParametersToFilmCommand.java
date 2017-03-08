@@ -6,6 +6,7 @@ import by.epam.filmrating.entity.Country;
 import by.epam.filmrating.entity.Genre;
 import by.epam.filmrating.exception.ServiceException;
 import by.epam.filmrating.manager.ConfigurationManager;
+import by.epam.filmrating.manager.TextManager;
 import by.epam.filmrating.service.ActorService;
 import by.epam.filmrating.service.CountryService;
 import by.epam.filmrating.service.FilmService;
@@ -14,14 +15,16 @@ import by.epam.filmrating.service.GenreService;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class SelectCreateParametersToFilmCommandI implements IActionCommand {
+public class SelectCreateParametersToFilmCommand implements IActionCommand {
     private final static String PATH_ERROR_PAGE = "path.page.error";
     private final static String PARAM_EXCEPTION = "exception";
     private final static String SERVICE_ERROR = "error.service";
     private final static String PARAM_CURRENT_FILM = "currentFilm";
     private final static String PARAM_ACTORS = "actor";
     private final static String PARAM_GENRES = "genre";
+    private final static String PARAM_LOCALE = "locale";
     private final static String PARAM_COUNTRIES = "country";
     private final static String ADD_PARAMETERS_SUCCESSFUL = "successful";
 
@@ -30,7 +33,7 @@ public class SelectCreateParametersToFilmCommandI implements IActionCommand {
     private GenreService genreService;
     private CountryService countryService;
 
-    public SelectCreateParametersToFilmCommandI() {
+    public SelectCreateParametersToFilmCommand() {
         this.filmService = new FilmService();
         this.actorService = new ActorService();
         this.genreService = new GenreService();
@@ -39,7 +42,6 @@ public class SelectCreateParametersToFilmCommandI implements IActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        ConfigurationManager configurationManager = new ConfigurationManager();
         String film = request.getParameter(PARAM_CURRENT_FILM);
         String[] actorNames = request.getParameterValues(PARAM_ACTORS);
         String[] genreNames = request.getParameterValues(PARAM_GENRES);
@@ -67,8 +69,8 @@ public class SelectCreateParametersToFilmCommandI implements IActionCommand {
                 }
             }
         } catch (ServiceException e) {
-            request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
-            return configurationManager.getProperty(PATH_ERROR_PAGE);
+            request.setAttribute(PARAM_EXCEPTION, TextManager.getProperty(SERVICE_ERROR, (Locale) request.getSession().getAttribute(PARAM_LOCALE)));
+            return ConfigurationManager.getProperty(PATH_ERROR_PAGE);
         }
         return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&successfulAddParameters=" + ADD_PARAMETERS_SUCCESSFUL;
     }

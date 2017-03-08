@@ -1,56 +1,58 @@
 package by.epam.filmrating.command.admin;
 
 import by.epam.filmrating.command.common.IActionCommand;
-import by.epam.filmrating.entity.Actor;
+import by.epam.filmrating.entity.StageDirector;
 import by.epam.filmrating.exception.ServiceException;
 import by.epam.filmrating.manager.ConfigurationManager;
-import by.epam.filmrating.service.ActorService;
+import by.epam.filmrating.manager.TextManager;
+import by.epam.filmrating.service.StageDirectorService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class AddActorCommandI implements IActionCommand {
+public class AddStageDirectorCommand implements IActionCommand {
     private final static String PATH_ERROR_PAGE = "path.page.error";
     private final static String PARAM_EXCEPTION = "exception";
     private final static String SERVICE_ERROR = "error.service";
+    private final static String PATH_500_PAGE = "path.page.500Error";
+    private final static String PARAM_LOCALE = "locale";
+    private final static String PARAM_STAGE_DIRECTOR_NAME = "stageDirectorName";
+    private final static String PARAM_DATE_OF_BIRTH = "stageDirectorDateOfBirth";
+    private final static String PARAM_INFORMATION = "infoStageDirector";
     private final static String FORMAT_DATE = "yyyy-MM-dd";
-    private final static String PARAM_ACTOR_NAME = "actorName";
-    private final static String PARAM_DATE_OF_BIRTH = "actorDateOfBirth";
-    private final static String PARAM_INFORMATION = "infoActor";
     private final static String ADD_PARAMETERS_SUCCESSFUL = "successful";
     private final static String ADD_PARAMETERS_ERROR = "error";
 
-    private ActorService actorService;
+    private StageDirectorService stageDirectorService;
 
-    public AddActorCommandI() {
-        this.actorService = new ActorService();
+    public AddStageDirectorCommand() {
+        this.stageDirectorService = new StageDirectorService();
     }
 
     @Override
     public String execute(HttpServletRequest request) {
-        ConfigurationManager configurationManager = new ConfigurationManager();
-        String name = request.getParameter(PARAM_ACTOR_NAME);
+        String name = request.getParameter(PARAM_STAGE_DIRECTOR_NAME);
         String dateOfBirthParam = request.getParameter(PARAM_DATE_OF_BIRTH);
         String info = request.getParameter(PARAM_INFORMATION);
         if (checkName(name)) {
-            Actor actor = new Actor();
-            actor.setName(name);
-            actor.setInfo(info);
+            StageDirector stageDirector = new StageDirector();
+            stageDirector.setName(name);
+            stageDirector.setInfo(info);
             try {
                 Date dateOfBirth = new SimpleDateFormat(FORMAT_DATE).parse(dateOfBirthParam);
-                actor.setDateOfBirth(dateOfBirth);
+                stageDirector.setDateOfBirth(dateOfBirth);
             } catch (ParseException e) {
-                request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
-                return configurationManager.getProperty(PATH_ERROR_PAGE);
+                return ConfigurationManager.getProperty(PATH_500_PAGE);
             }
             try {
-                actorService.create(actor);
+                stageDirectorService.create(stageDirector);
             } catch (ServiceException e) {
-                request.setAttribute(PARAM_EXCEPTION, e);
-                return configurationManager.getProperty(PATH_ERROR_PAGE);
+                request.setAttribute(PARAM_EXCEPTION, TextManager.getProperty(SERVICE_ERROR, (Locale) request.getSession().getAttribute(PARAM_LOCALE)));
+                return ConfigurationManager.getProperty(PATH_ERROR_PAGE);
             }
             return "redirect:/controller?command=OPEN_ADD_FILM_PAGE&successfulAddParameters=" + ADD_PARAMETERS_SUCCESSFUL;
         } else {
@@ -59,12 +61,12 @@ public class AddActorCommandI implements IActionCommand {
     }
 
     private boolean checkName(String name) {
-        List<Actor> actors;
+        List<StageDirector> stageDirectors;
         boolean check = true;
         try {
-            actors = this.actorService.findAll();
-            for (Actor actor : actors) {
-                if (actor.getName().equalsIgnoreCase(name)) {
+            stageDirectors = this.stageDirectorService.findAll();
+            for (StageDirector stageDirector : stageDirectors) {
+                if (stageDirector.getName().equalsIgnoreCase(name)) {
                     check = false;
                 }
             }

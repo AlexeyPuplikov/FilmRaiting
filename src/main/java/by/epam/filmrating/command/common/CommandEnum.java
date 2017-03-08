@@ -66,47 +66,47 @@ public enum CommandEnum {
     },
     ADD_FILM {
         {
-            this.command = new AddFilmCommandI();
+            this.command = new AddFilmCommand();
         }
     },
     ADD_STAGE_DIRECTOR {
         {
-            this.command = new AddStageDirectorCommandI();
+            this.command = new AddStageDirectorCommand();
         }
     },
     ADD_ACTOR {
         {
-            this.command = new AddActorCommandI();
+            this.command = new AddActorCommand();
         }
     },
     ADD_GENRE {
         {
-            this.command = new AddGenreCommandI();
+            this.command = new AddGenreCommand();
         }
     },
     ADD_COUNTRY {
         {
-            this.command = new AddCountryCommandI();
+            this.command = new AddCountryCommand();
         }
     },
     OPEN_ADD_FILM_PAGE {
         {
-            this.command = new OpenAddFilmPageCommandI();
+            this.command = new OpenAddFilmPageCommand();
         }
     },
     SELECT_CREATE_PARAMETERS_TO_FILM {
         {
-            this.command = new SelectCreateParametersToFilmCommandI();
+            this.command = new SelectCreateParametersToFilmCommand();
         }
     },
     ADDITIONAL_PARAMETERS_TO_FILM {
         {
-            this.command = new AdditionalParametersToFilmCommandI();
+            this.command = new AdditionalParametersToFilmCommand();
         }
     },
     UPLOAD_FILE {
         {
-            this.command = new UploadFileCommandI();
+            this.command = new UploadFileCommand();
         }
     },
     DELETE_FILM {
@@ -121,12 +121,12 @@ public enum CommandEnum {
     },
     USER_CONTROL {
         {
-            this.command = new UserControlCommandI();
+            this.command = new UserControlCommand();
         }
     },
     OPEN_USER_CONTROL_PAGE {
         {
-            this.command = new OpenUserControlPageCommandI();
+            this.command = new OpenUserControlPageCommand();
         }
     };
 

@@ -7,6 +7,7 @@ import by.epam.filmrating.entity.Film;
 import by.epam.filmrating.entity.Genre;
 import by.epam.filmrating.exception.ServiceException;
 import by.epam.filmrating.manager.ConfigurationManager;
+import by.epam.filmrating.manager.TextManager;
 import by.epam.filmrating.service.ActorService;
 import by.epam.filmrating.service.CountryService;
 import by.epam.filmrating.service.FilmService;
@@ -14,14 +15,16 @@ import by.epam.filmrating.service.GenreService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Locale;
 
-public class AdditionalParametersToFilmCommandI implements IActionCommand {
+public class AdditionalParametersToFilmCommand implements IActionCommand {
     private final static String PATH_ERROR_PAGE = "path.page.error";
     private final static String PARAM_FILM = "film";
     private final static String PARAM_EXCEPTION = "exception";
     private final static String SERVICE_ERROR = "error.service";
     private final static String PARAM_ALL_ACTORS = "allActors";
     private final static String PARAM_ALL_GENRES = "allGenres";
+    private final static String PARAM_LOCALE = "locale";
     private final static String PARAM_ALL_COUNTRIES = "allCountries";
     private final static String PARAM_CURRENT_FILM = "currentFilm";
 
@@ -30,7 +33,7 @@ public class AdditionalParametersToFilmCommandI implements IActionCommand {
     private GenreService genreService;
     private CountryService countryService;
 
-    public AdditionalParametersToFilmCommandI() {
+    public AdditionalParametersToFilmCommand() {
         this.filmService = new FilmService();
         this.actorService = new ActorService();
         this.genreService = new GenreService();
@@ -39,7 +42,6 @@ public class AdditionalParametersToFilmCommandI implements IActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-        ConfigurationManager configurationManager = new ConfigurationManager();
         String filmName = request.getParameter(PARAM_FILM);
         try {
             Film film = filmService.findEntityBySign(filmName);
@@ -51,8 +53,8 @@ public class AdditionalParametersToFilmCommandI implements IActionCommand {
             request.setAttribute(PARAM_ALL_COUNTRIES, countries);
             request.setAttribute(PARAM_CURRENT_FILM, film);
         } catch (ServiceException e) {
-            request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
-            return configurationManager.getProperty(PATH_ERROR_PAGE);
+            request.setAttribute(PARAM_EXCEPTION, TextManager.getProperty(SERVICE_ERROR, (Locale) request.getSession().getAttribute(PARAM_LOCALE)));
+            return ConfigurationManager.getProperty(PATH_ERROR_PAGE);
         }
         return "/controller?command=OPEN_ADD_FILM_PAGE";
     }

@@ -49,7 +49,7 @@ public class ViewFilmsCommand implements IActionCommand {
                 request.setAttribute(PARAM_LIMIT_FILMS, limitFilms);
                 return ConfigurationManager.getProperty(PATH_MAIN_USER_PAGE);
             } else {
-                return ConfigurationManager.getProperty(PATH_500_PAGE); //another error
+                return ConfigurationManager.getProperty(PATH_500_PAGE);
             }
         } catch (ServiceException e) {
             request.setAttribute(PARAM_EXCEPTION, TextManager.getProperty(SERVICE_ERROR, (Locale) request.getSession().getAttribute(PARAM_LOCALE)));

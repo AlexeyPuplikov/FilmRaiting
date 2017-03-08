@@ -152,7 +152,7 @@ ${messageAddFilm}
                                         <p><fmt:message key="label.selectCover"/></p>
                                         <input type="hidden" name="command" value="UPLOAD_FILE">
                                         <input type="hidden" name="filmName" value="${currentFilm.name}">
-                                        <input type="file" name="image" >
+                                        <input type="file" name="image" accept="image/jpeg">
                                         <button type="submit" class="btn"><fmt:message key="label.add"/></button>
                                     </form>
                                 </c:when>

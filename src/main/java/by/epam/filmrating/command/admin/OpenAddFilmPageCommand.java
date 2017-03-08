@@ -11,14 +11,14 @@ import by.epam.filmrating.service.StageDirectorService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Locale;
 
-public class OpenAddFilmPageCommandI implements IActionCommand {
+public class OpenAddFilmPageCommand implements IActionCommand {
     private final static String PATH_ERROR_PAGE = "path.page.error";
     private final static String PATH_ADD_FILM_PAGE = "path.page.addFilm";
     private final static String PARAM_EXCEPTION = "exception";
     private final static String SERVICE_ERROR = "error.service";
     private final static String PARAM_LOCALE = "locale";
-    private final static String PARAM_LANGUAGE = "language";
     private final static String PARAM_ALL_STAGE_DIRECTORS = "allStageDirectors";
     private final static String PARAM_ALL_FILMS = "allFilms";
     private final static String ADD_ERROR = "error.addFilm";
@@ -31,40 +31,37 @@ public class OpenAddFilmPageCommandI implements IActionCommand {
     private FilmService filmService;
     private StageDirectorService stageDirectorService;
 
-    public OpenAddFilmPageCommandI() {
+    public OpenAddFilmPageCommand() {
         this.filmService = new FilmService();
         this.stageDirectorService = new StageDirectorService();
     }
 
     @Override
     public String execute(HttpServletRequest request) {
-        ConfigurationManager configurationManager = new ConfigurationManager();
         try {
             List<Film> films = filmService.findAll();
             List<StageDirector> stageDirectors = stageDirectorService.findAll();
-            String currLocale = (String) request.getSession().getAttribute(PARAM_LANGUAGE);
-            request.setAttribute(PARAM_LOCALE, currLocale);
             request.setAttribute(PARAM_ALL_STAGE_DIRECTORS, stageDirectors);
             request.setAttribute(PARAM_ALL_FILMS, films);
         } catch (ServiceException e) {
-            request.setAttribute(PARAM_EXCEPTION, configurationManager.getProperty(SERVICE_ERROR));
-            return configurationManager.getProperty(PATH_ERROR_PAGE);
+            request.setAttribute(PARAM_EXCEPTION, TextManager.getProperty(SERVICE_ERROR, (Locale) request.getSession().getAttribute(PARAM_LOCALE)));
+            return ConfigurationManager.getProperty(PATH_ERROR_PAGE);
         }
-        /*if (request.getParameter("errorAdd") != null) {
-            request.setAttribute(PARAM_ADD_MESSAGE, textManager.getProperty(ADD_ERROR));
+        if (request.getParameter("errorAdd") != null) {
+            request.setAttribute(PARAM_ADD_MESSAGE, TextManager.getProperty(ADD_ERROR, (Locale) request.getSession().getAttribute(PARAM_LOCALE)));
         }
         if (request.getParameter("successfulAdd") != null) {
-            request.setAttribute(PARAM_ADD_MESSAGE, textManager.getProperty(ADD_SUCCESSFUL));
+            request.setAttribute(PARAM_ADD_MESSAGE, TextManager.getProperty(ADD_SUCCESSFUL, (Locale) request.getSession().getAttribute(PARAM_LOCALE)));
         }
         if (request.getParameter("successfulAddParameters") != null) {
-            request.setAttribute(PARAM_ADD_MESSAGE, textManager.getProperty(ADD_PARAMETER_SUCCESSFUL));
+            request.setAttribute(PARAM_ADD_MESSAGE, TextManager.getProperty(ADD_PARAMETER_SUCCESSFUL, (Locale) request.getSession().getAttribute(PARAM_LOCALE)));
         }
         if (request.getParameter("successfulAddCover") != null) {
-            request.setAttribute(PARAM_ADD_MESSAGE, textManager.getProperty(ADD_COVER_SUCCESSFUL));
+            request.setAttribute(PARAM_ADD_MESSAGE, TextManager.getProperty(ADD_COVER_SUCCESSFUL, (Locale) request.getSession().getAttribute(PARAM_LOCALE)));
         }
         if (request.getParameter("errorAddParameters") != null) {
-            request.setAttribute(PARAM_ADD_MESSAGE, textManager.getProperty(ADD_PARAMETERS_ERROR));
-        }*/
-        return configurationManager.getProperty(PATH_ADD_FILM_PAGE);
+            request.setAttribute(PARAM_ADD_MESSAGE, TextManager.getProperty(ADD_PARAMETERS_ERROR, (Locale) request.getSession().getAttribute(PARAM_LOCALE)));
+        }
+        return ConfigurationManager.getProperty(PATH_ADD_FILM_PAGE);
     }
 }

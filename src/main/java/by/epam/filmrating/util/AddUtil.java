@@ -8,23 +8,23 @@ public class AddUtil {
     private final static int BUDGET_START = 2000000;
     private final static int BUDGET_END = 500000000;
 
-    public boolean checkName(String name) {
+    public static boolean checkName(String name) {
         return !name.isEmpty();
     }
 
-    public boolean checkYear(int year) {
+    public static boolean checkYear(int year) {
         return year <= CURRENT_YEAR && year > START_YEAR;
     }
 
-    public boolean checkDescription(String description) {
+    public static boolean checkDescription(String description) {
         return !description.isEmpty();
     }
 
-    public boolean checkTime(int time) {
+    public static boolean checkTime(int time) {
         return time <= TIME_END && time >= TIME_START;
     }
 
-    public boolean checkBudget(int budget) {
+    public static boolean checkBudget(int budget) {
         return budget <= BUDGET_END && budget >= BUDGET_START;
     }
 }
